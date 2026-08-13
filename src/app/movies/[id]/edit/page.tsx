@@ -18,6 +18,7 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { updateMovieAction } from "@/actions/movies";
 import { MovieForm } from "@/components/MovieForm";
+import { PageHero } from "@/components/PageHero";
 import { StatusBanner } from "@/components/StatusBanner";
 import { getAuthState } from "@/lib/auth";
 import { getMovieById } from "@/lib/movies";
@@ -41,23 +42,21 @@ export default async function EditMoviePage({
 
   return (
     <div className="mx-auto max-w-2xl px-4 py-10 sm:px-6">
-      <p className="text-xs uppercase tracking-[0.24em] text-gold">Administrator</p>
-      <h1 className="font-display mt-2 text-5xl text-ivory">Edit title</h1>
-      <p className="mt-3 text-sm leading-6 text-muted">
-        Change the card and save. Validation runs in the browser and again on the server.
-      </p>
-      <div className="mt-8">
-        {result.ok ? (
-          <MovieForm movie={result.movie} action={updateMovieAction} submitLabel="Save changes" />
-        ) : (
-          <div className="space-y-4">
-            <StatusBanner tone="error" message={result.message} />
-            <Link href="/movies" className="inline-flex min-h-11 cursor-pointer items-center text-sm uppercase tracking-[0.14em] text-gold">
-              Back to catalogue
-            </Link>
-          </div>
-        )}
-      </div>
+      <PageHero
+        kicker="Administrator"
+        title="Edit title"
+        description="Change the card and save. Validation runs in the browser and again on the server."
+      />
+      {result.ok ? (
+        <MovieForm movie={result.movie} action={updateMovieAction} submitLabel="Save changes" />
+      ) : (
+        <div className="space-y-4">
+          <StatusBanner tone="error" message={result.message} />
+          <Link href="/movies" className="btn btn-secondary">
+            Back to catalogue
+          </Link>
+        </div>
+      )}
     </div>
   );
 }

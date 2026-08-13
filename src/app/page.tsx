@@ -26,51 +26,47 @@ export default async function HomePage() {
   const auth = configured ? await getAuthState() : { userId: null, isAdmin: false, email: null, role: null };
 
   return (
-    <div className="mx-auto max-w-6xl px-4 py-12 sm:px-6 sm:py-16">
-      <section className="grid gap-10 lg:grid-cols-[1.2fr_0.8fr] lg:items-end">
-        <div>
-          <p className="text-xs uppercase tracking-[0.28em] text-gold">Staff portal</p>
-          <h1 className="font-display mt-4 text-6xl leading-[0.9] text-ivory sm:text-7xl">
-            {COMPANY.name}
-          </h1>
-          <p className="mt-6 max-w-xl text-lg leading-8 text-muted">
-            Keep the rental shelf honest. Members browse title, cast, and year.
-            Administrators add new stock, correct a card, or retire a title —
-            every change is stored in Supabase, not in the browser.
-          </p>
-          <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-            {auth.userId ? (
-              <Link
-                href="/movies"
-                className="inline-flex min-h-12 cursor-pointer items-center justify-center rounded-sm bg-gold px-6 text-sm uppercase tracking-[0.16em] text-booth hover:bg-gold-soft transition-colors duration-200"
-              >
-                Open catalogue
-              </Link>
-            ) : (
-              <>
-                <Link
-                  href="/login"
-                  className="inline-flex min-h-12 cursor-pointer items-center justify-center rounded-sm bg-gold px-6 text-sm uppercase tracking-[0.16em] text-booth hover:bg-gold-soft transition-colors duration-200"
-                >
-                  Sign in
+    <div className="page-wrap py-10 sm:py-16">
+      <section className="page-hero">
+        <div className="relative z-10 grid gap-10 lg:grid-cols-[1.15fr_0.85fr] lg:items-center">
+          <div>
+            <p className="kicker">Internet Movies Rental Company</p>
+            <h1 className="font-display mt-4 text-5xl font-semibold leading-[1.05] text-ivory sm:text-6xl lg:text-7xl">
+              IMR Movie Library
+            </h1>
+            <p className="mt-5 max-w-xl text-lg leading-8 text-secondary">
+              Explore and manage the {COMPANY.name} collection. Members browse title, cast, and year.
+              Administrators keep the shelf current — every change lives in Supabase.
+            </p>
+            <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+              {auth.userId ? (
+                <Link href="/movies" className="btn btn-primary">
+                  Open catalogue
                 </Link>
-                <Link
-                  href="/signup"
-                  className="inline-flex min-h-12 cursor-pointer items-center justify-center rounded-sm border border-gold/40 px-6 text-sm uppercase tracking-[0.16em] text-gold hover:bg-gold hover:text-booth transition-colors duration-200"
-                >
-                  Create account
-                </Link>
-              </>
-            )}
+              ) : (
+                <>
+                  <Link href="/login" className="btn btn-primary">
+                    Sign in
+                  </Link>
+                  <Link href="/signup" className="btn btn-secondary">
+                    Create account
+                  </Link>
+                </>
+              )}
+            </div>
           </div>
+          <aside className="card-surface p-6 sm:p-8">
+            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-secondary">On every card</p>
+            <p className="font-display mt-3 text-3xl font-semibold text-ivory sm:text-4xl">Title · Cast · Year</p>
+            <p className="mt-4 text-sm leading-6 text-secondary">
+              The three fields every IMR title must carry. Nothing else is required to run the shop.
+            </p>
+            <div className="mt-6 flex flex-wrap gap-2">
+              <span className="badge badge-gold">Now showing</span>
+              <span className="badge badge-member">Staff portal</span>
+            </div>
+          </aside>
         </div>
-        <aside className="ticket-card sprocket-rail rounded-sm border border-[var(--line)] p-6 pl-8">
-          <p className="font-mono text-xs uppercase tracking-[0.2em] text-gold">Tonight&apos;s desk copy</p>
-          <p className="font-display mt-3 text-4xl text-ivory">Title · Cast · Year</p>
-          <p className="mt-4 text-sm leading-6 text-muted">
-            The three fields every IMR card must carry. Nothing else is required to run the shop.
-          </p>
-        </aside>
       </section>
 
       {!configured ? (
@@ -79,7 +75,7 @@ export default async function HomePage() {
         </div>
       ) : null}
 
-      <section className="mt-16 grid gap-4 md:grid-cols-3">
+      <section className="mt-12 grid gap-4 md:grid-cols-3">
         {[
           {
             kicker: "Members",
@@ -97,10 +93,10 @@ export default async function HomePage() {
             body: "The UI hides admin tools from members. Row Level Security blocks direct writes as well.",
           },
         ].map((card) => (
-          <article key={card.title} className="rounded-sm border border-[var(--line)] bg-panel/80 p-5">
-            <p className="text-xs uppercase tracking-[0.2em] text-gold">{card.kicker}</p>
-            <h2 className="font-display mt-3 text-3xl text-ivory">{card.title}</h2>
-            <p className="mt-3 text-sm leading-6 text-muted">{card.body}</p>
+          <article key={card.title} className="card-surface p-6 transition-transform duration-200 hover:-translate-y-0.5">
+            <p className="kicker">{card.kicker}</p>
+            <h2 className="font-display mt-4 text-2xl font-semibold text-ivory">{card.title}</h2>
+            <p className="mt-3 text-sm leading-6 text-secondary">{card.body}</p>
           </article>
         ))}
       </section>

@@ -24,15 +24,12 @@ type ErrorPageProps = {
 export default function ErrorPage({ reset }: ErrorPageProps) {
   return (
     <div className="mx-auto max-w-lg px-4 py-16 text-center sm:px-6">
-      <h1 className="font-display text-5xl text-ivory">Something went wrong</h1>
-      <p className="mt-4 text-sm leading-6 text-muted">
+      <p className="kicker">Portal error</p>
+      <h1 className="font-display mt-3 text-4xl font-semibold text-ivory sm:text-5xl">Something went wrong</h1>
+      <p className="mt-4 text-sm leading-6 text-secondary">
         The portal hit an unexpected error. Try again. If it continues, check that Supabase is reachable.
       </p>
-      <button
-        type="button"
-        onClick={reset}
-        className="mt-8 min-h-11 cursor-pointer rounded-sm bg-gold px-5 text-sm uppercase tracking-[0.14em] text-booth hover:bg-gold-soft transition-colors duration-200"
-      >
+      <button type="button" onClick={reset} className="btn btn-primary mt-8">
         Try again
       </button>
     </div>

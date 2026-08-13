@@ -16,6 +16,7 @@
 
 import Link from "next/link";
 import { MovieList } from "@/components/MovieList";
+import { PageHero } from "@/components/PageHero";
 import { SetupNotice } from "@/components/SetupNotice";
 import { StatusBanner } from "@/components/StatusBanner";
 import { getAuthState } from "@/lib/auth";
@@ -34,7 +35,7 @@ export default async function MoviesPage({
 }) {
   if (!isSupabaseConfigured()) {
     return (
-      <div className="mx-auto max-w-6xl px-4 py-12 sm:px-6">
+      <div className="page-wrap py-12">
         <SetupNotice />
       </div>
     );
@@ -45,26 +46,25 @@ export default async function MoviesPage({
   const result = await listMovies();
 
   return (
-    <div className="mx-auto max-w-6xl px-4 py-10 sm:px-6">
-      <div className="mb-8 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
-        <div>
-          <p className="text-xs uppercase tracking-[0.24em] text-gold">Catalogue</p>
-          <h1 className="font-display mt-2 text-5xl text-ivory">Now on the shelf</h1>
-          <p className="mt-3 max-w-xl text-sm leading-6 text-muted">
-            Every card lists the title, the billed actors, and the release year. Data is loaded from Supabase on each request.
-          </p>
-        </div>
-        {auth.isAdmin ? (
-          <Link
-            href="/movies/new"
-            className="inline-flex min-h-11 cursor-pointer items-center justify-center rounded-sm bg-gold px-5 text-sm uppercase tracking-[0.14em] text-booth hover:bg-gold-soft transition-colors duration-200"
-          >
-            Add movie
-          </Link>
-        ) : null}
-      </div>
+    <div className="page-wrap py-10">
+      <PageHero
+        kicker="IMR catalogue"
+        title="IMR Movie Library"
+        description="Explore and manage the Internet Movies Rental Company collection. Every card lists the title, billed actors, and release year."
+        actions={
+          auth.isAdmin ? (
+            <Link href="/movies/new" className="btn btn-primary">
+              Add movie
+            </Link>
+          ) : null
+        }
+      />
 
-      {status && statusCopy[status] ? <div className="mb-6"><StatusBanner tone="success" message={statusCopy[status]} /></div> : null}
+      {status && statusCopy[status] ? (
+        <div className="mb-6">
+          <StatusBanner tone="success" message={statusCopy[status]} />
+        </div>
+      ) : null}
 
       {result.ok ? (
         <MovieList movies={result.movies} isAdmin={auth.isAdmin} />

@@ -51,7 +51,7 @@ export function DeleteMovieButton({ movieId, title }: DeleteMovieButtonProps) {
     <div>
       <button
         type="button"
-        className="min-h-11 cursor-pointer rounded-sm border border-danger/50 px-3 text-xs uppercase tracking-[0.14em] text-danger hover:bg-danger hover:text-ivory transition-colors duration-200"
+        className="btn btn-danger"
         onClick={() => setOpen(true)}
       >
         Delete

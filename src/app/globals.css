@@ -5,10 +5,10 @@
  * Course: Full-Stack Web Applications — SAIT
  *
  * Description:
- * Global tokens and base styles for the IMR portal. The palette is a
- * projection-booth interior: charcoal walls, velvet panels, ticket-gold
- * accents, and ivory type. Utility classes for ticket cards, focus rings,
- * and reduced-motion live here so components stay thin.
+ * Global tokens and base styles for the IMR portal. The visual system is a
+ * premium cinema interior: immersion black, midnight blue surfaces, and a
+ * restrained golden-ticket accent. Shared button, field, card, and hero
+ * classes live here so every page stays consistent without copying CSS.
  *
  * Inputs: Tailwind v4 and CSS custom properties defined below.
  * Processing: Compiles to the site-wide stylesheet.
@@ -18,32 +18,45 @@
 @import "tailwindcss";
 
 :root {
-  --booth: #12101c;
-  --velvet: #1b1730;
-  --panel: #241f3a;
-  --gold: #d4a017;
-  --gold-soft: #f0d78c;
-  --ivory: #f4efe4;
-  --muted: #b7ae9d;
-  --rust: #c45c26;
-  --danger: #e85d4c;
-  --line: rgba(244, 239, 228, 0.12);
-  --shadow: 0 18px 40px rgba(0, 0, 0, 0.35);
+  --background: #0a0017;
+  --surface: #091849;
+  --surface-elevated: #111b3d;
+  --accent: #e19617;
+  --accent-hover: #f0a91f;
+  --text-primary: #ffffff;
+  --text-secondary: #d1d5db;
+  --text-muted: #919195;
+  --border: rgba(255, 255, 255, 0.1);
+  --danger: #f87171;
+  --danger-strong: #ef4444;
+  --success: #34d399;
+  --shadow: 0 20px 48px rgba(0, 0, 0, 0.45);
+  --ring: 0 0 0 3px rgba(225, 150, 23, 0.35);
+
+  --booth: var(--background);
+  --velvet: var(--surface);
+  --panel: var(--surface-elevated);
+  --gold: var(--accent);
+  --gold-soft: var(--accent-hover);
+  --ivory: var(--text-primary);
+  --muted: var(--text-muted);
+  --line: var(--border);
+  --rust: #f59e0b;
 }
 
 @theme inline {
-  --color-booth: var(--booth);
-  --color-velvet: var(--velvet);
-  --color-panel: var(--panel);
-  --color-gold: var(--gold);
-  --color-gold-soft: var(--gold-soft);
-  --color-ivory: var(--ivory);
-  --color-muted: var(--muted);
-  --color-rust: var(--rust);
+  --color-booth: var(--background);
+  --color-velvet: var(--surface);
+  --color-panel: var(--surface-elevated);
+  --color-gold: var(--accent);
+  --color-gold-soft: var(--accent-hover);
+  --color-ivory: var(--text-primary);
+  --color-muted: var(--text-muted);
+  --color-secondary: var(--text-secondary);
   --color-danger: var(--danger);
+  --color-rust: var(--rust);
   --font-sans: var(--font-source-sans);
-  --font-display: var(--font-bebas);
-  --font-mono: var(--font-ibm-plex);
+  --font-display: var(--font-outfit);
 }
 
 html {
@@ -52,39 +65,218 @@ html {
 
 body {
   background:
-    radial-gradient(1200px 500px at 10% -10%, rgba(212, 160, 23, 0.08), transparent 55%),
-    radial-gradient(900px 400px at 100% 0%, rgba(196, 92, 38, 0.08), transparent 50%),
-    var(--booth);
-  color: var(--ivory);
+    radial-gradient(1100px 520px at 8% -12%, rgba(9, 24, 73, 0.9), transparent 58%),
+    radial-gradient(900px 420px at 100% -8%, rgba(225, 150, 23, 0.08), transparent 46%),
+    linear-gradient(180deg, #091849 0%, #0a0017 42%, #0a0017 100%);
+  background-attachment: fixed;
+  color: var(--text-primary);
   font-family: var(--font-source-sans), "Segoe UI", sans-serif;
   min-height: 100%;
+  overflow-x: hidden;
 }
 
 ::selection {
-  background: var(--gold);
-  color: var(--booth);
+  background: var(--accent);
+  color: var(--background);
 }
 
 :focus-visible {
-  outline: 2px solid var(--gold);
+  outline: 2px solid var(--accent);
   outline-offset: 3px;
 }
 
 .font-display {
-  font-family: var(--font-bebas), "Arial Narrow", sans-serif;
-  letter-spacing: 0.06em;
+  font-family: var(--font-outfit), "Segoe UI", sans-serif;
+  letter-spacing: -0.03em;
 }
 
-.sprocket-rail {
-  background-image: radial-gradient(circle at 8px 12px, var(--booth) 4px, transparent 4.5px);
-  background-size: 16px 24px;
-  background-repeat: repeat-y;
-  background-position: left center;
+.page-wrap {
+  margin-inline: auto;
+  width: 100%;
+  max-width: 72rem;
+  padding-inline: 1rem;
 }
 
-.ticket-card {
-  background: linear-gradient(180deg, #2a2444 0%, #1d1833 100%);
+@media (min-width: 640px) {
+  .page-wrap {
+    padding-inline: 1.5rem;
+  }
+}
+
+.page-hero {
+  position: relative;
+  overflow: hidden;
+  border-radius: 1rem;
+  border: 1px solid var(--border);
+  background:
+    linear-gradient(135deg, rgba(9, 24, 73, 0.95) 0%, rgba(10, 0, 23, 0.92) 58%, rgba(17, 27, 61, 0.88) 100%);
+  padding: 2rem 1.5rem;
+}
+
+@media (min-width: 640px) {
+  .page-hero {
+    padding: 2.75rem 2.25rem;
+  }
+}
+
+.page-hero::after {
+  content: "";
+  position: absolute;
+  inset: auto -10% -40% 40%;
+  height: 220px;
+  border-radius: 999px;
+  background: radial-gradient(circle, rgba(225, 150, 23, 0.16), transparent 68%);
+  pointer-events: none;
+}
+
+.kicker {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+}
+
+.kicker::before {
+  content: "";
+  width: 0.55rem;
+  height: 0.55rem;
+  border-radius: 999px;
+  background: var(--accent);
+  box-shadow: 0 0 12px rgba(225, 150, 23, 0.55);
+}
+
+.card-surface {
+  border: 1px solid var(--border);
+  border-radius: 1rem;
+  background: color-mix(in srgb, var(--surface-elevated) 88%, black);
   box-shadow: var(--shadow);
+}
+
+.field {
+  margin-top: 0.5rem;
+  min-height: 2.75rem;
+  width: 100%;
+  border-radius: 0.65rem;
+  border: 1px solid var(--border);
+  background: rgba(10, 0, 23, 0.72);
+  padding: 0 0.85rem;
+  color: var(--text-primary);
+  transition: border-color 180ms ease, box-shadow 180ms ease;
+}
+
+.field::placeholder {
+  color: color-mix(in srgb, var(--text-muted) 80%, white);
+}
+
+.field:hover {
+  border-color: rgba(255, 255, 255, 0.18);
+}
+
+.field:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: var(--ring);
+}
+
+.field option {
+  background: #111b3d;
+  color: #ffffff;
+}
+
+.field[aria-invalid="true"] {
+  border-color: var(--danger);
+  box-shadow: 0 0 0 3px rgba(248, 113, 113, 0.25);
+}
+
+.btn {
+  display: inline-flex;
+  min-height: 2.75rem;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  border-radius: 0.65rem;
+  padding: 0 1.15rem;
+  font-size: 0.8125rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background-color 180ms ease, color 180ms ease, border-color 180ms ease, transform 180ms ease, box-shadow 180ms ease;
+}
+
+.btn:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+.btn:hover:not(:disabled) {
+  transform: translateY(-1px);
+}
+
+.btn-primary {
+  background: var(--accent);
+  color: #0a0017;
+  box-shadow: 0 8px 20px rgba(225, 150, 23, 0.22);
+}
+
+.btn-primary:hover:not(:disabled) {
+  background: var(--accent-hover);
+}
+
+.btn-secondary {
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  background: transparent;
+  color: var(--text-primary);
+}
+
+.btn-secondary:hover:not(:disabled) {
+  border-color: var(--accent);
+  color: var(--accent-hover);
+  background: rgba(225, 150, 23, 0.08);
+}
+
+.btn-danger {
+  border: 1px solid rgba(248, 113, 113, 0.45);
+  background: transparent;
+  color: #fecaca;
+}
+
+.btn-danger:hover:not(:disabled) {
+  background: var(--danger-strong);
+  border-color: var(--danger-strong);
+  color: #ffffff;
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 999px;
+  padding: 0.2rem 0.65rem;
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.badge-gold {
+  background: var(--accent);
+  color: #0a0017;
+}
+
+.badge-admin {
+  background: rgba(225, 150, 23, 0.16);
+  color: var(--accent-hover);
+  border: 1px solid rgba(225, 150, 23, 0.4);
+}
+
+.badge-member {
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--text-secondary);
+  border: 1px solid var(--border);
 }
 
 @media (prefers-reduced-motion: reduce) {

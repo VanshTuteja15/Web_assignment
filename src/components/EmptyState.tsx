@@ -24,9 +24,9 @@ type EmptyStateProps = {
 
 export function EmptyState({ title, message, action }: EmptyStateProps) {
   return (
-    <div role="status" className="rounded-sm border border-dashed border-[var(--line)] bg-panel/60 px-6 py-14 text-center">
-      <h2 className="font-display text-3xl text-gold">{title}</h2>
-      <p className="mx-auto mt-3 max-w-md text-sm leading-6 text-muted">{message}</p>
+    <div role="status" className="card-surface border-dashed px-6 py-16 text-center">
+      <h2 className="font-display text-3xl font-semibold text-ivory">{title}</h2>
+      <p className="mx-auto mt-3 max-w-md text-sm leading-6 text-secondary">{message}</p>
       {action ? <div className="mt-6">{action}</div> : null}
     </div>
   );

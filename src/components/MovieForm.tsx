@@ -56,14 +56,14 @@ export function MovieForm({ movie, action, submitLabel }: MovieFormProps) {
   }
 
   return (
-    <form action={handleSubmit} className="space-y-5 rounded-sm border border-[var(--line)] bg-panel p-5 sm:p-8" noValidate>
+    <form action={handleSubmit} className="card-surface space-y-5 p-5 sm:p-8" noValidate>
       {movie ? <input type="hidden" name="id" value={movie.id} /> : null}
 
       {state && !state.ok && !state.fieldErrors ? <StatusBanner tone="error" message={state.message} /> : null}
       {state && !state.ok && state.fieldErrors ? <StatusBanner tone="error" message={state.message} /> : null}
 
       <div>
-        <label htmlFor="title" className="block text-xs uppercase tracking-[0.16em] text-muted">
+        <label htmlFor="title" className="block text-xs font-semibold uppercase tracking-[0.16em] text-secondary">
           Title
         </label>
         <input
@@ -76,7 +76,7 @@ export function MovieForm({ movie, action, submitLabel }: MovieFormProps) {
           autoComplete="off"
           aria-invalid={Boolean(fieldErrors.title)}
           aria-describedby={fieldErrors.title ? "title-error" : "title-help"}
-          className="mt-2 min-h-11 w-full rounded-sm border border-[var(--line)] bg-booth px-3 text-ivory"
+          className="field"
         />
         <p id="title-help" className="mt-1 text-xs text-muted">
           Required. Up to 200 characters.
@@ -89,7 +89,7 @@ export function MovieForm({ movie, action, submitLabel }: MovieFormProps) {
       </div>
 
       <div>
-        <label htmlFor="actors" className="block text-xs uppercase tracking-[0.16em] text-muted">
+        <label htmlFor="actors" className="block text-xs font-semibold uppercase tracking-[0.16em] text-secondary">
           Actors
         </label>
         <input
@@ -103,7 +103,7 @@ export function MovieForm({ movie, action, submitLabel }: MovieFormProps) {
           aria-invalid={Boolean(fieldErrors.actors)}
           aria-describedby={fieldErrors.actors ? "actors-error" : "actors-help"}
           placeholder="Michelle Yeoh, Ke Huy Quan"
-          className="mt-2 min-h-11 w-full rounded-sm border border-[var(--line)] bg-booth px-3 text-ivory"
+          className="field"
         />
         <p id="actors-help" className="mt-1 text-xs text-muted">
           Required. Separate names with commas.
@@ -116,7 +116,7 @@ export function MovieForm({ movie, action, submitLabel }: MovieFormProps) {
       </div>
 
       <div>
-        <label htmlFor="releaseYear" className="block text-xs uppercase tracking-[0.16em] text-muted">
+        <label htmlFor="releaseYear" className="block text-xs font-semibold uppercase tracking-[0.16em] text-secondary">
           Release year
         </label>
         <input
@@ -128,7 +128,7 @@ export function MovieForm({ movie, action, submitLabel }: MovieFormProps) {
           required
           aria-invalid={Boolean(fieldErrors.releaseYear)}
           aria-describedby={fieldErrors.releaseYear ? "year-error" : "year-help"}
-          className="mt-2 min-h-11 w-full max-w-[12rem] rounded-sm border border-[var(--line)] bg-booth px-3 font-mono text-ivory"
+          className="field max-w-[12rem]"
         />
         <p id="year-help" className="mt-1 text-xs text-muted">
           Required. A four-digit year, not far in the future.
@@ -141,17 +141,10 @@ export function MovieForm({ movie, action, submitLabel }: MovieFormProps) {
       </div>
 
       <div className="flex flex-col-reverse gap-3 pt-2 sm:flex-row sm:justify-end">
-        <Link
-          href="/movies"
-          className="inline-flex min-h-11 cursor-pointer items-center justify-center rounded-sm border border-[var(--line)] px-4 text-sm uppercase tracking-[0.14em] text-ivory hover:bg-velvet transition-colors duration-200"
-        >
+        <Link href="/movies" className="btn btn-secondary">
           Cancel
         </Link>
-        <button
-          type="submit"
-          disabled={pending}
-          className="min-h-11 cursor-pointer rounded-sm bg-gold px-5 text-sm uppercase tracking-[0.14em] text-booth hover:bg-gold-soft transition-colors duration-200 disabled:opacity-60"
-        >
+        <button type="submit" disabled={pending} className="btn btn-primary">
           {pending ? "Saving…" : submitLabel}
         </button>
       </div>

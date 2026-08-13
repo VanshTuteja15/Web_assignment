@@ -57,23 +57,23 @@ export function MovieList({ movies, isAdmin }: MovieListProps) {
 
   return (
     <div className="space-y-6">
-      <div className="flex flex-col gap-3 rounded-sm border border-[var(--line)] bg-panel/70 p-4 sm:flex-row sm:items-end">
-        <label className="block flex-1 text-xs uppercase tracking-[0.16em] text-muted">
+      <div className="card-surface flex flex-col gap-3 p-4 sm:flex-row sm:items-end">
+        <label className="block flex-1 text-xs font-semibold uppercase tracking-[0.16em] text-secondary">
           Search titles or actors
           <input
             type="search"
             value={query}
             onChange={(event) => setQuery(event.target.value)}
             placeholder="e.g. Yeoh or 2015"
-            className="mt-2 min-h-11 w-full rounded-sm border border-[var(--line)] bg-booth px-3 text-sm text-ivory placeholder:text-muted/70"
+            className="field"
           />
         </label>
-        <label className="block text-xs uppercase tracking-[0.16em] text-muted sm:w-56">
+        <label className="block text-xs font-semibold uppercase tracking-[0.16em] text-secondary sm:w-56">
           Sort
           <select
             value={sort}
             onChange={(event) => setSort(event.target.value as SortKey)}
-            className="mt-2 min-h-11 w-full cursor-pointer rounded-sm border border-[var(--line)] bg-booth px-3 text-sm text-ivory"
+            className="field cursor-pointer"
           >
             <option value="title">Title (A–Z)</option>
             <option value="year-desc">Newest year first</option>
@@ -94,10 +94,7 @@ export function MovieList({ movies, isAdmin }: MovieListProps) {
           }
           action={
             isAdmin && !query ? (
-              <Link
-                href="/movies/new"
-                className="inline-flex min-h-11 cursor-pointer items-center rounded-sm bg-gold px-4 text-sm uppercase tracking-[0.14em] text-booth hover:bg-gold-soft transition-colors duration-200"
-              >
+              <Link href="/movies/new" className="btn btn-primary">
                 Add movie
               </Link>
             ) : null
@@ -112,10 +109,7 @@ export function MovieList({ movies, isAdmin }: MovieListProps) {
                 actions={
                   isAdmin ? (
                     <>
-                      <Link
-                        href={`/movies/${movie.id}/edit`}
-                        className="inline-flex min-h-11 cursor-pointer items-center rounded-sm border border-gold/40 px-3 text-xs uppercase tracking-[0.14em] text-gold hover:bg-gold hover:text-booth transition-colors duration-200"
-                      >
+                      <Link href={`/movies/${movie.id}/edit`} className="btn btn-secondary">
                         Edit
                       </Link>
                       <DeleteMovieButton movieId={movie.id} title={movie.title} />

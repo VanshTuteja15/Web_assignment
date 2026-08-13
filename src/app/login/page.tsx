@@ -16,6 +16,7 @@
 
 import { signInAction } from "@/actions/auth";
 import { AuthForm } from "@/components/AuthForm";
+import { COMPANY } from "@/lib/constants";
 
 export default async function LoginPage({
   searchParams,
@@ -25,14 +26,16 @@ export default async function LoginPage({
   const { next } = await searchParams;
 
   return (
-    <div className="mx-auto max-w-md px-4 py-12 sm:px-6">
-      <p className="text-xs uppercase tracking-[0.24em] text-gold">Members</p>
-      <h1 className="font-display mt-2 text-5xl text-ivory">Sign in</h1>
-      <p className="mt-3 text-sm leading-6 text-muted">
-        Use the email and password you created for the IMR portal.
-      </p>
-      <div className="mt-8">
-        <AuthForm mode="login" action={signInAction} nextPath={next} />
+    <div className="page-wrap flex justify-center py-12 sm:py-16">
+      <div className="w-full max-w-md">
+        <p className="kicker">{COMPANY.shortName} members</p>
+        <h1 className="font-display mt-3 text-4xl font-semibold text-ivory sm:text-5xl">Sign in</h1>
+        <p className="mt-3 text-sm leading-6 text-secondary">
+          Use the email and password you created for the IMR portal.
+        </p>
+        <div className="mt-8">
+          <AuthForm mode="login" action={signInAction} nextPath={next} />
+        </div>
       </div>
     </div>
   );

@@ -16,7 +16,7 @@
  */
 
 import type { Metadata } from "next";
-import { Bebas_Neue, IBM_Plex_Mono, Source_Sans_3 } from "next/font/google";
+import { Outfit, Source_Sans_3 } from "next/font/google";
 import { Footer } from "@/components/Footer";
 import { Navbar } from "@/components/Navbar";
 import { getAuthState } from "@/lib/auth";
@@ -30,17 +30,9 @@ const sourceSans = Source_Sans_3({
   display: "swap",
 });
 
-const bebasNeue = Bebas_Neue({
-  variable: "--font-bebas",
+const outfit = Outfit({
+  variable: "--font-outfit",
   subsets: ["latin"],
-  weight: "400",
-  display: "swap",
-});
-
-const ibmPlex = IBM_Plex_Mono({
-  variable: "--font-ibm-plex",
-  subsets: ["latin"],
-  weight: ["400", "500"],
   display: "swap",
 });
 
@@ -64,14 +56,15 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="en"
-      className={`${sourceSans.variable} ${bebasNeue.variable} ${ibmPlex.variable} h-full antialiased`}
+      data-scroll-behavior="smooth"
+      className={`${sourceSans.variable} ${outfit.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">
         <Navbar auth={auth} configured={configured} />
         <main id="main-content" className="flex-1">
           {children}
         </main>
-        <Footer />
+        <Footer signedIn={Boolean(auth.userId)} isAdmin={auth.isAdmin} />
       </body>
     </html>
   );

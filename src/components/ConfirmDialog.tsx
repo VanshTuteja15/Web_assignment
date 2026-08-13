@@ -38,35 +38,25 @@ export function ConfirmDialog({
   }
 
   return (
-    <div className="fixed inset-0 z-50 grid place-items-center bg-black/70 px-4" role="presentation">
+    <div className="fixed inset-0 z-50 grid place-items-center bg-black/75 px-4" role="presentation">
       <div
         role="dialog"
         aria-modal="true"
         aria-labelledby="confirm-title"
         aria-describedby="confirm-desc"
-        className="w-full max-w-md rounded-sm border border-[var(--line)] bg-velvet p-6 shadow-[var(--shadow)]"
+        className="card-surface w-full max-w-md p-6"
       >
-        <h2 id="confirm-title" className="font-display text-3xl text-gold">
+        <h2 id="confirm-title" className="font-display text-3xl font-semibold text-ivory">
           {title}
         </h2>
-        <p id="confirm-desc" className="mt-3 text-sm leading-6 text-muted">
+        <p id="confirm-desc" className="mt-3 text-sm leading-6 text-secondary">
           {description}
         </p>
         <div className="mt-6 flex flex-col-reverse gap-3 sm:flex-row sm:justify-end">
-          <button
-            type="button"
-            className="min-h-11 cursor-pointer rounded-sm border border-[var(--line)] px-4 text-sm uppercase tracking-[0.12em] text-ivory hover:bg-panel transition-colors duration-200"
-            onClick={onCancel}
-            disabled={busy}
-          >
+          <button type="button" className="btn btn-secondary" onClick={onCancel} disabled={busy}>
             Cancel
           </button>
-          <button
-            type="button"
-            className="min-h-11 cursor-pointer rounded-sm bg-danger px-4 text-sm uppercase tracking-[0.12em] text-ivory hover:brightness-110 transition-all duration-200 disabled:opacity-60"
-            onClick={onConfirm}
-            disabled={busy}
-          >
+          <button type="button" className="btn btn-danger" onClick={onConfirm} disabled={busy}>
             {busy ? "Working…" : confirmLabel}
           </button>
         </div>

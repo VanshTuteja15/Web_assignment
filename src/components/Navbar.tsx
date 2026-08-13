@@ -18,6 +18,7 @@
 "use client";
 
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { signOutAction } from "@/actions/auth";
 import { COMPANY } from "@/lib/constants";
@@ -28,8 +29,16 @@ type NavbarProps = {
   configured: boolean;
 };
 
+function isActivePath(pathname: string, href: string) {
+  if (href === "/") {
+    return pathname === "/";
+  }
+  return pathname === href || pathname.startsWith(`${href}/`);
+}
+
 export function Navbar({ auth, configured }: NavbarProps) {
   const [open, setOpen] = useState(false);
+  const pathname = usePathname();
   const signedIn = Boolean(auth.userId);
 
   const links = [
@@ -39,28 +48,26 @@ export function Navbar({ auth, configured }: NavbarProps) {
   ];
 
   return (
-    <header className="sticky top-0 z-40 border-b border-[var(--line)] bg-[color:rgb(18_16_28_/_0.92)] backdrop-blur-md">
+    <header className="sticky top-0 z-40 border-b border-[var(--border)] bg-[color:rgb(10_0_23_/_0.88)] backdrop-blur-md">
       <a
         href="#main-content"
-        className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-3 focus:z-50 focus:bg-gold focus:px-3 focus:py-2 focus:text-booth"
+        className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-3 focus:z-50 focus:rounded-md focus:bg-gold focus:px-3 focus:py-2 focus:text-booth"
       >
         Skip to content
       </a>
-      <nav aria-label="Primary" className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-3 sm:px-6">
-        <Link href="/" className="group flex items-center gap-3 cursor-pointer" onClick={() => setOpen(false)}>
-          <span className="grid h-10 w-10 place-items-center rounded-sm border border-gold/70 bg-velvet text-gold" aria-hidden="true">
-            <svg viewBox="0 0 24 24" className="h-5 w-5" fill="currentColor">
-              <rect x="3" y="5" width="18" height="14" rx="1.5" fill="none" stroke="currentColor" strokeWidth="1.6" />
-              <circle cx="8" cy="12" r="1.4" />
-              <circle cx="16" cy="12" r="1.4" />
-              <path d="M3 8h18M3 16h18" stroke="currentColor" strokeWidth="1.2" />
+      <nav aria-label="Primary" className="page-wrap relative flex items-center justify-between gap-4 py-3">
+        <Link href="/" className="group flex min-h-11 items-center gap-3 cursor-pointer" onClick={() => setOpen(false)}>
+          <span className="grid h-11 w-11 place-items-center rounded-xl border border-gold/50 bg-velvet text-gold" aria-hidden="true">
+            <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="1.7">
+              <rect x="3" y="5" width="18" height="14" rx="2" />
+              <path d="M8 5v14M16 5v14M3 9h18M3 15h18" />
             </svg>
           </span>
           <span>
-            <span className="font-display block text-2xl leading-none text-ivory group-hover:text-gold-soft transition-colors duration-200">
+            <span className="font-display block text-2xl font-semibold leading-none text-ivory group-hover:text-gold-soft transition-colors duration-200">
               {COMPANY.shortName}
             </span>
-            <span className="block text-[0.65rem] uppercase tracking-[0.22em] text-muted">
+            <span className="block text-[0.68rem] font-medium uppercase tracking-[0.18em] text-secondary">
               Movie rentals
             </span>
           </span>
@@ -68,7 +75,7 @@ export function Navbar({ auth, configured }: NavbarProps) {
 
         <button
           type="button"
-          className="inline-flex min-h-11 min-w-11 items-center justify-center rounded-sm border border-[var(--line)] text-ivory cursor-pointer md:hidden"
+          className="inline-flex min-h-11 min-w-11 items-center justify-center rounded-xl border border-[var(--border)] text-ivory cursor-pointer md:hidden"
           aria-expanded={open}
           aria-controls="primary-links"
           onClick={() => setOpen((value) => !value)}
@@ -85,33 +92,38 @@ export function Navbar({ auth, configured }: NavbarProps) {
 
         <div
           id="primary-links"
-          className={`${open ? "flex" : "hidden"} absolute left-0 right-0 top-full flex-col gap-1 border-b border-[var(--line)] bg-booth px-4 py-4 md:static md:flex md:flex-row md:items-center md:gap-6 md:border-0 md:bg-transparent md:p-0`}
+          className={`${open ? "flex" : "hidden"} absolute left-0 right-0 top-full z-30 flex-col gap-1 border-b border-[var(--border)] bg-booth px-4 py-4 md:static md:flex md:flex-row md:items-center md:gap-1 md:border-0 md:bg-transparent md:p-0`}
         >
-          {links.map((link) => (
-            <Link
-              key={link.href}
-              href={link.href}
-              className="min-h-11 px-2 py-2 text-sm uppercase tracking-[0.16em] text-muted hover:text-gold-soft transition-colors duration-200 cursor-pointer"
-              onClick={() => setOpen(false)}
-            >
-              {link.label}
-            </Link>
-          ))}
+          {links.map((link) => {
+            const active = isActivePath(pathname, link.href);
+            return (
+              <Link
+                key={link.href}
+                href={link.href}
+                aria-current={active ? "page" : undefined}
+                className={`min-h-11 rounded-lg px-3 py-2 text-sm font-semibold tracking-wide transition-colors duration-200 cursor-pointer ${
+                  active
+                    ? "text-gold-soft bg-gold/10"
+                    : "text-secondary hover:text-ivory hover:bg-white/5"
+                }`}
+                onClick={() => setOpen(false)}
+              >
+                {link.label}
+              </Link>
+            );
+          })}
 
-          <div className="mt-2 flex flex-col gap-2 border-t border-[var(--line)] pt-3 md:mt-0 md:ml-2 md:flex-row md:items-center md:border-t-0 md:pt-0">
+          <div className="mt-2 flex flex-col gap-2 border-t border-[var(--border)] pt-3 md:mt-0 md:ml-3 md:flex-row md:items-center md:border-t-0 md:pt-0">
             {signedIn ? (
               <>
-                <p className="px-2 text-sm text-muted">
+                <p className="px-2 text-sm text-secondary">
                   <span className="block font-medium text-ivory">{auth.email}</span>
-                  <span className="text-xs uppercase tracking-[0.14em] text-gold">
-                    {auth.isAdmin ? "Administrator" : "Member"}
+                  <span className={`mt-1 badge ${auth.isAdmin ? "badge-admin" : "badge-member"}`}>
+                    {auth.isAdmin ? "Admin" : "Member"}
                   </span>
                 </p>
                 <form action={signOutAction}>
-                  <button
-                    type="submit"
-                    className="min-h-11 w-full cursor-pointer rounded-sm border border-gold/40 px-4 text-sm uppercase tracking-[0.14em] text-gold hover:bg-gold hover:text-booth transition-colors duration-200 md:w-auto"
-                  >
+                  <button type="submit" className="btn btn-secondary w-full md:w-auto">
                     Sign out
                   </button>
                 </form>
@@ -120,14 +132,14 @@ export function Navbar({ auth, configured }: NavbarProps) {
               <>
                 <Link
                   href="/login"
-                  className="min-h-11 px-3 py-2 text-sm uppercase tracking-[0.14em] text-ivory hover:text-gold-soft cursor-pointer"
+                  className="btn btn-secondary w-full md:w-auto"
                   onClick={() => setOpen(false)}
                 >
                   Sign in
                 </Link>
                 <Link
                   href="/signup"
-                  className="min-h-11 cursor-pointer rounded-sm bg-gold px-4 py-2 text-center text-sm uppercase tracking-[0.14em] text-booth hover:bg-gold-soft transition-colors duration-200"
+                  className="btn btn-primary w-full md:w-auto"
                   onClick={() => setOpen(false)}
                 >
                   Sign up
@@ -135,7 +147,7 @@ export function Navbar({ auth, configured }: NavbarProps) {
               </>
             )}
             {!configured ? (
-              <span className="px-2 text-xs uppercase tracking-[0.12em] text-rust">Setup needed</span>
+              <span className="px-2 text-xs font-semibold uppercase tracking-[0.12em] text-danger">Setup needed</span>
             ) : null}
           </div>
         </div>

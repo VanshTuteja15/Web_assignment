@@ -34,7 +34,7 @@ export function AuthForm({ mode, action, nextPath }: AuthFormProps) {
   const isSignup = mode === "signup";
 
   return (
-    <form action={formAction} className="space-y-5 rounded-sm border border-[var(--line)] bg-panel p-5 sm:p-8" noValidate>
+    <form action={formAction} className="card-surface space-y-5 p-5 sm:p-8" noValidate>
       {nextPath ? <input type="hidden" name="next" value={nextPath} /> : null}
       {state.message ? (
         <StatusBanner
@@ -44,7 +44,7 @@ export function AuthForm({ mode, action, nextPath }: AuthFormProps) {
       ) : null}
 
       <div>
-        <label htmlFor="email" className="block text-xs uppercase tracking-[0.16em] text-muted">
+        <label htmlFor="email" className="block text-xs font-semibold uppercase tracking-[0.16em] text-secondary">
           Email
         </label>
         <input
@@ -53,12 +53,12 @@ export function AuthForm({ mode, action, nextPath }: AuthFormProps) {
           type="email"
           autoComplete="email"
           required
-          className="mt-2 min-h-11 w-full rounded-sm border border-[var(--line)] bg-booth px-3 text-ivory"
+          className="field"
         />
       </div>
 
       <div>
-        <label htmlFor="password" className="block text-xs uppercase tracking-[0.16em] text-muted">
+        <label htmlFor="password" className="block text-xs font-semibold uppercase tracking-[0.16em] text-secondary">
           Password
         </label>
         <input
@@ -68,7 +68,7 @@ export function AuthForm({ mode, action, nextPath }: AuthFormProps) {
           autoComplete={isSignup ? "new-password" : "current-password"}
           required
           minLength={isSignup ? 8 : undefined}
-          className="mt-2 min-h-11 w-full rounded-sm border border-[var(--line)] bg-booth px-3 text-ivory"
+          className="field"
         />
         {isSignup ? (
           <p className="mt-1 text-xs text-muted">At least 8 characters.</p>
@@ -77,7 +77,7 @@ export function AuthForm({ mode, action, nextPath }: AuthFormProps) {
 
       {isSignup ? (
         <div>
-          <label htmlFor="confirmPassword" className="block text-xs uppercase tracking-[0.16em] text-muted">
+          <label htmlFor="confirmPassword" className="block text-xs font-semibold uppercase tracking-[0.16em] text-secondary">
             Confirm password
           </label>
           <input
@@ -87,31 +87,27 @@ export function AuthForm({ mode, action, nextPath }: AuthFormProps) {
             autoComplete="new-password"
             required
             minLength={8}
-            className="mt-2 min-h-11 w-full rounded-sm border border-[var(--line)] bg-booth px-3 text-ivory"
+            className="field"
           />
         </div>
       ) : null}
 
-      <button
-        type="submit"
-        disabled={pending}
-        className="min-h-11 w-full cursor-pointer rounded-sm bg-gold text-sm uppercase tracking-[0.16em] text-booth hover:bg-gold-soft transition-colors duration-200 disabled:opacity-60"
-      >
+      <button type="submit" disabled={pending} className="btn btn-primary w-full">
         {pending ? "Please wait…" : isSignup ? "Create account" : "Sign in"}
       </button>
 
-      <p className="text-center text-sm text-muted">
+      <p className="text-center text-sm text-secondary">
         {isSignup ? (
           <>
             Already have an account?{" "}
-            <Link href="/login" className="text-gold hover:text-gold-soft cursor-pointer">
+            <Link href="/login" className="font-semibold text-gold-soft hover:text-gold cursor-pointer">
               Sign in
             </Link>
           </>
         ) : (
           <>
             New to IMR?{" "}
-            <Link href="/signup" className="text-gold hover:text-gold-soft cursor-pointer">
+            <Link href="/signup" className="font-semibold text-gold-soft hover:text-gold cursor-pointer">
               Create an account
             </Link>
           </>

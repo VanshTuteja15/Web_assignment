@@ -17,6 +17,7 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { DeleteMovieButton } from "@/components/DeleteMovieButton";
+import { PageHero } from "@/components/PageHero";
 import { StatusBanner } from "@/components/StatusBanner";
 import { getAuthState } from "@/lib/auth";
 import { listMovies } from "@/lib/movies";
@@ -34,70 +35,68 @@ export default async function AdminPage() {
   const result = await listMovies();
 
   return (
-    <div className="mx-auto max-w-6xl px-4 py-10 sm:px-6">
-      <p className="text-xs uppercase tracking-[0.24em] text-gold">Administrator</p>
-      <h1 className="font-display mt-2 text-5xl text-ivory">Desk</h1>
-      <p className="mt-3 max-w-2xl text-sm leading-6 text-muted">
-        Signed in as {auth.email}. Add stock, correct a card, or retire a title. Every write is checked again by Row Level Security.
-      </p>
+    <div className="page-wrap py-10">
+      <PageHero
+        kicker="Administrator"
+        title="Admin desk"
+        description={`Signed in as ${auth.email}. Add stock, correct a card, or retire a title. Every write is checked again by Row Level Security.`}
+        actions={
+          <>
+            <Link href="/movies/new" className="btn btn-primary">
+              Add movie
+            </Link>
+            <Link href="/movies" className="btn btn-secondary">
+              View catalogue
+            </Link>
+          </>
+        }
+      />
 
-      <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-        <Link
-          href="/movies/new"
-          className="inline-flex min-h-11 cursor-pointer items-center justify-center rounded-sm bg-gold px-5 text-sm uppercase tracking-[0.14em] text-booth hover:bg-gold-soft transition-colors duration-200"
-        >
-          Add movie
-        </Link>
-        <Link
-          href="/movies"
-          className="inline-flex min-h-11 cursor-pointer items-center justify-center rounded-sm border border-gold/40 px-5 text-sm uppercase tracking-[0.14em] text-gold hover:bg-gold hover:text-booth transition-colors duration-200"
-        >
-          View catalogue
-        </Link>
-      </div>
-
-      <section className="mt-10">
-        <h2 className="font-display text-3xl text-ivory">Stock</h2>
+      <section className="card-surface overflow-hidden">
+        <div className="border-b border-[var(--border)] px-5 py-4 sm:px-6">
+          <h2 className="font-display text-2xl font-semibold text-ivory">Stock</h2>
+          {result.ok ? (
+            <p className="mt-1 text-sm text-secondary">
+              {result.movies.length} title{result.movies.length === 1 ? "" : "s"} on the shelf
+            </p>
+          ) : null}
+        </div>
         {!result.ok ? (
-          <div className="mt-4">
+          <div className="p-5">
             <StatusBanner tone="error" message={result.message} />
           </div>
         ) : (
-          <>
-            <p className="mt-2 font-mono text-sm text-muted">{result.movies.length} title{result.movies.length === 1 ? "" : "s"} on the shelf</p>
-            <div className="mt-6 overflow-x-auto rounded-sm border border-[var(--line)]">
-              <table className="min-w-full text-left text-sm">
-                <thead className="bg-velvet text-xs uppercase tracking-[0.16em] text-gold">
-                  <tr>
-                    <th className="px-4 py-3 font-medium">Title</th>
-                    <th className="px-4 py-3 font-medium">Actors</th>
-                    <th className="px-4 py-3 font-medium">Year</th>
-                    <th className="px-4 py-3 font-medium">Actions</th>
+          <div className="overflow-x-auto">
+            <table className="min-w-full text-left text-sm">
+              <thead className="bg-velvet text-xs font-semibold uppercase tracking-[0.14em] text-secondary">
+                <tr>
+                  <th className="px-4 py-3 font-semibold sm:px-6">Title</th>
+                  <th className="px-4 py-3 font-semibold sm:px-6">Actors</th>
+                  <th className="px-4 py-3 font-semibold sm:px-6">Year</th>
+                  <th className="px-4 py-3 font-semibold sm:px-6">Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {result.movies.map((movie) => (
+                  <tr key={movie.id} className="border-t border-[var(--border)] hover:bg-white/[0.03]">
+                    <td className="px-4 py-4 font-medium text-ivory sm:px-6">{movie.title}</td>
+                    <td className="px-4 py-4 text-secondary sm:px-6">{formatActors(movie.actors)}</td>
+                    <td className="px-4 py-4 sm:px-6">
+                      <span className="badge badge-gold">{movie.release_year}</span>
+                    </td>
+                    <td className="px-4 py-4 sm:px-6">
+                      <div className="flex flex-wrap gap-2">
+                        <Link href={`/movies/${movie.id}/edit`} className="btn btn-secondary">
+                          Edit
+                        </Link>
+                        <DeleteMovieButton movieId={movie.id} title={movie.title} />
+                      </div>
+                    </td>
                   </tr>
-                </thead>
-                <tbody>
-                  {result.movies.map((movie) => (
-                    <tr key={movie.id} className="border-t border-[var(--line)]">
-                      <td className="px-4 py-3 text-ivory">{movie.title}</td>
-                      <td className="px-4 py-3 text-muted">{formatActors(movie.actors)}</td>
-                      <td className="px-4 py-3 font-mono text-gold">{movie.release_year}</td>
-                      <td className="px-4 py-3">
-                        <div className="flex flex-wrap gap-2">
-                          <Link
-                            href={`/movies/${movie.id}/edit`}
-                            className="inline-flex min-h-11 cursor-pointer items-center rounded-sm border border-gold/40 px-3 text-xs uppercase tracking-[0.14em] text-gold hover:bg-gold hover:text-booth transition-colors duration-200"
-                          >
-                            Edit
-                          </Link>
-                          <DeleteMovieButton movieId={movie.id} title={movie.title} />
-                        </div>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </>
+                ))}
+              </tbody>
+            </table>
+          </div>
         )}
       </section>
     </div>

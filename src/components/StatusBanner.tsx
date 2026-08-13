@@ -19,16 +19,16 @@ type StatusBannerProps = {
 };
 
 const toneClass: Record<StatusBannerProps["tone"], string> = {
-  success: "border-gold/50 bg-gold/10 text-gold-soft",
-  error: "border-danger/50 bg-danger/10 text-ivory",
-  info: "border-[var(--line)] bg-panel text-muted",
+  success: "border-emerald-400/40 bg-emerald-400/10 text-emerald-200",
+  error: "border-danger/60 bg-danger/15 text-ivory",
+  info: "border-[var(--border)] bg-velvet text-secondary",
 };
 
 export function StatusBanner({ tone, message }: StatusBannerProps) {
   return (
     <p
       role={tone === "error" ? "alert" : "status"}
-      className={`rounded-sm border px-4 py-3 text-sm leading-6 ${toneClass[tone]}`}
+      className={`rounded-xl border px-4 py-3 text-sm leading-6 ${toneClass[tone]}`}
     >
       {message}
     </p>
