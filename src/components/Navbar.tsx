@@ -1,0 +1,145 @@
+/**
+ * File: src/components/Navbar.tsx
+ * Student: Vansh Tuteja
+ * Date: August 12, 2026
+ * Course: Full-Stack Web Applications — SAIT
+ *
+ * Description:
+ * Custom static site header for IMR. Links are fixed in the source (Home,
+ * Catalogue, Admin, Sign in / Sign up). The mobile disclosure is the only
+ * interactive piece. Admin links are hidden for regular users, but the
+ * matching routes still enforce Auth and RLS on the server.
+ *
+ * Inputs: AuthState and whether Supabase credentials are present.
+ * Processing: Renders navigation, a mobile menu, and a sign-out form.
+ * Outputs: The header landmark shown on every page.
+ */
+
+"use client";
+
+import Link from "next/link";
+import { useState } from "react";
+import { signOutAction } from "@/actions/auth";
+import { COMPANY } from "@/lib/constants";
+import type { AuthState } from "@/lib/types";
+
+type NavbarProps = {
+  auth: AuthState;
+  configured: boolean;
+};
+
+export function Navbar({ auth, configured }: NavbarProps) {
+  const [open, setOpen] = useState(false);
+  const signedIn = Boolean(auth.userId);
+
+  const links = [
+    { href: "/", label: "Home" },
+    { href: "/movies", label: "Catalogue" },
+    ...(auth.isAdmin ? [{ href: "/admin", label: "Admin" }] : []),
+  ];
+
+  return (
+    <header className="sticky top-0 z-40 border-b border-[var(--line)] bg-[color:rgb(18_16_28_/_0.92)] backdrop-blur-md">
+      <a
+        href="#main-content"
+        className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-3 focus:z-50 focus:bg-gold focus:px-3 focus:py-2 focus:text-booth"
+      >
+        Skip to content
+      </a>
+      <nav aria-label="Primary" className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-3 sm:px-6">
+        <Link href="/" className="group flex items-center gap-3 cursor-pointer" onClick={() => setOpen(false)}>
+          <span className="grid h-10 w-10 place-items-center rounded-sm border border-gold/70 bg-velvet text-gold" aria-hidden="true">
+            <svg viewBox="0 0 24 24" className="h-5 w-5" fill="currentColor">
+              <rect x="3" y="5" width="18" height="14" rx="1.5" fill="none" stroke="currentColor" strokeWidth="1.6" />
+              <circle cx="8" cy="12" r="1.4" />
+              <circle cx="16" cy="12" r="1.4" />
+              <path d="M3 8h18M3 16h18" stroke="currentColor" strokeWidth="1.2" />
+            </svg>
+          </span>
+          <span>
+            <span className="font-display block text-2xl leading-none text-ivory group-hover:text-gold-soft transition-colors duration-200">
+              {COMPANY.shortName}
+            </span>
+            <span className="block text-[0.65rem] uppercase tracking-[0.22em] text-muted">
+              Movie rentals
+            </span>
+          </span>
+        </Link>
+
+        <button
+          type="button"
+          className="inline-flex min-h-11 min-w-11 items-center justify-center rounded-sm border border-[var(--line)] text-ivory cursor-pointer md:hidden"
+          aria-expanded={open}
+          aria-controls="primary-links"
+          onClick={() => setOpen((value) => !value)}
+        >
+          <span className="sr-only">{open ? "Close menu" : "Open menu"}</span>
+          <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true">
+            {open ? (
+              <path d="M6 6l12 12M18 6L6 18" />
+            ) : (
+              <path d="M4 7h16M4 12h16M4 17h16" />
+            )}
+          </svg>
+        </button>
+
+        <div
+          id="primary-links"
+          className={`${open ? "flex" : "hidden"} absolute left-0 right-0 top-full flex-col gap-1 border-b border-[var(--line)] bg-booth px-4 py-4 md:static md:flex md:flex-row md:items-center md:gap-6 md:border-0 md:bg-transparent md:p-0`}
+        >
+          {links.map((link) => (
+            <Link
+              key={link.href}
+              href={link.href}
+              className="min-h-11 px-2 py-2 text-sm uppercase tracking-[0.16em] text-muted hover:text-gold-soft transition-colors duration-200 cursor-pointer"
+              onClick={() => setOpen(false)}
+            >
+              {link.label}
+            </Link>
+          ))}
+
+          <div className="mt-2 flex flex-col gap-2 border-t border-[var(--line)] pt-3 md:mt-0 md:ml-2 md:flex-row md:items-center md:border-t-0 md:pt-0">
+            {signedIn ? (
+              <>
+                <p className="px-2 text-sm text-muted">
+                  <span className="block font-medium text-ivory">{auth.email}</span>
+                  <span className="text-xs uppercase tracking-[0.14em] text-gold">
+                    {auth.isAdmin ? "Administrator" : "Member"}
+                  </span>
+                </p>
+                <form action={signOutAction}>
+                  <button
+                    type="submit"
+                    className="min-h-11 w-full cursor-pointer rounded-sm border border-gold/40 px-4 text-sm uppercase tracking-[0.14em] text-gold hover:bg-gold hover:text-booth transition-colors duration-200 md:w-auto"
+                  >
+                    Sign out
+                  </button>
+                </form>
+              </>
+            ) : (
+              <>
+                <Link
+                  href="/login"
+                  className="min-h-11 px-3 py-2 text-sm uppercase tracking-[0.14em] text-ivory hover:text-gold-soft cursor-pointer"
+                  onClick={() => setOpen(false)}
+                >
+                  Sign in
+                </Link>
+                <Link
+                  href="/signup"
+                  className="min-h-11 cursor-pointer rounded-sm bg-gold px-4 py-2 text-center text-sm uppercase tracking-[0.14em] text-booth hover:bg-gold-soft transition-colors duration-200"
+                  onClick={() => setOpen(false)}
+                >
+                  Sign up
+                </Link>
+              </>
+            )}
+            {!configured ? (
+              <span className="px-2 text-xs uppercase tracking-[0.12em] text-rust">Setup needed</span>
+            ) : null}
+          </div>
+        </div>
+      </nav>
+    </header>
+  );
+}
