@@ -1,15 +1,15 @@
 /**
  * File: src/actions/auth.ts
- * Student: Vansh Tuteja
- * Date: August 12, 2026
+ * Student: Group 12
+ * Date: August 15, 2026
  * Course: Full-Stack Web Applications — SAIT
  *
  * Description:
  * Server Actions for sign-up, sign-in, and sign-out. Validation runs on the
  * server so empty or malformed credentials never reach Supabase. After a
  * successful sign-in the visitor is sent to the catalogue (or the `next`
- * path if it is a safe internal URL). Sign-up also writes a profiles row
- * in case the database trigger has not been installed yet.
+ * path if it is a safe internal URL). Sign-up writes a viewer profile in
+ * case the database trigger has not been installed yet.
  *
  * Inputs: FormData from the login and sign-up forms.
  * Processing: Validates fields, calls Supabase Auth, ensures a profile exists.
@@ -35,14 +35,14 @@ function safeNextPath(raw: FormDataEntryValue | null): string {
   return "/movies";
 }
 
-async function ensureProfile(userId: string, email: string) {
+async function ensureViewerProfile(userId: string, email: string) {
   const supabase = await createServerSupabaseClient();
   if (!supabase) {
     return;
   }
 
   await supabase.from("profiles").upsert(
-    { id: userId, email, role: "user" },
+    { id: userId, email, role: "viewer" },
     { onConflict: "id", ignoreDuplicates: true },
   );
 }
@@ -66,6 +66,7 @@ export async function signInAction(
     return { message: "Supabase is not configured. Add credentials to .env.local first." };
   }
 
+  // --- Sign in with email and password ---
   const { data, error } = await supabase.auth.signInWithPassword({
     email: email.trim().toLowerCase(),
     password,
@@ -78,7 +79,7 @@ export async function signInAction(
     return { message: "Sign-in failed. No user was returned." };
   }
 
-  await ensureProfile(data.user.id, data.user.email ?? email.trim().toLowerCase());
+  await ensureViewerProfile(data.user.id, data.user.email ?? email.trim().toLowerCase());
   redirect(next);
 }
 
@@ -105,6 +106,8 @@ export async function signUpAction(
   }
 
   const normalisedEmail = email.trim().toLowerCase();
+
+  // --- Create a viewer account ---
   const { data, error } = await supabase.auth.signUp({
     email: normalisedEmail,
     password,
@@ -135,7 +138,7 @@ export async function signUpAction(
   }
 
   if (user) {
-    await ensureProfile(user.id, user.email ?? normalisedEmail);
+    await ensureViewerProfile(user.id, user.email ?? normalisedEmail);
   }
 
   if (!session) {

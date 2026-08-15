@@ -1,7 +1,7 @@
 /**
  * File: src/lib/auth.ts
- * Student: Vansh Tuteja
- * Date: August 12, 2026
+ * Student: Group 12
+ * Date: August 15, 2026
  * Course: Full-Stack Web Applications — SAIT
  *
  * Description:
@@ -31,6 +31,7 @@ export async function getAuthState(): Promise<AuthState> {
     return signedOut;
   }
 
+  // --- Resolve the signed-in user ---
   const {
     data: { user },
     error,
@@ -40,13 +41,14 @@ export async function getAuthState(): Promise<AuthState> {
     return signedOut;
   }
 
+  // --- Load role from profiles (never from client metadata) ---
   const { data: profile } = await supabase
     .from("profiles")
     .select("id, email, role, created_at")
     .eq("id", user.id)
     .maybeSingle<Profile>();
 
-  const role: UserRole = profile?.role === "admin" ? "admin" : "user";
+  const role: UserRole = profile?.role === "admin" ? "admin" : "viewer";
 
   return {
     userId: user.id,
@@ -59,7 +61,7 @@ export async function getAuthState(): Promise<AuthState> {
 export async function requireUser(): Promise<AuthState> {
   const auth = await getAuthState();
   if (!auth.userId) {
-    throw new Error("You must be signed in to view the catalogue.");
+    throw new Error("You must be signed in to change the catalogue.");
   }
   return auth;
 }

@@ -1,7 +1,7 @@
 /**
  * File: src/components/DeleteMovieButton.tsx
- * Student: Vansh Tuteja
- * Date: August 12, 2026
+ * Student: Group 12
+ * Date: August 15, 2026
  * Course: Full-Stack Web Applications — SAIT
  *
  * Description:
@@ -20,6 +20,7 @@ import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { deleteMovieAction } from "@/actions/movies";
 import { ConfirmDialog } from "@/components/ConfirmDialog";
+import { Button } from "@/components/ui/button";
 
 type DeleteMovieButtonProps = {
   movieId: string;
@@ -49,21 +50,17 @@ export function DeleteMovieButton({ movieId, title }: DeleteMovieButtonProps) {
 
   return (
     <div>
-      <button
-        type="button"
-        className="btn btn-danger"
-        onClick={() => setOpen(true)}
-      >
+      <Button type="button" variant="destructive" size="sm" onClick={() => setOpen(true)}>
         Delete
-      </button>
+      </Button>
       {error ? (
-        <p role="alert" className="mt-2 max-w-[12rem] text-xs text-danger">
+        <p role="alert" className="mt-2 max-w-[12rem] text-xs text-destructive">
           {error}
         </p>
       ) : null}
       <ConfirmDialog
         open={open}
-        title="Retire this title?"
+        title="Delete this title?"
         description={`“${title}” will be removed from the IMR catalogue. This cannot be undone.`}
         confirmLabel="Delete movie"
         busy={busy}

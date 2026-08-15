@@ -1,7 +1,7 @@
 /**
  * File: src/app/not-found.tsx
- * Student: Vansh Tuteja
- * Date: August 12, 2026
+ * Student: Group 12
+ * Date: August 15, 2026
  * Course: Full-Stack Web Applications — SAIT
  *
  * Description:
@@ -14,16 +14,17 @@
  */
 
 import Link from "next/link";
+import { Button } from "@/components/ui/button";
 
 export default function NotFoundPage() {
   return (
-    <div className="mx-auto max-w-lg px-4 py-16 text-center sm:px-6">
-      <p className="kicker">404</p>
-      <h1 className="font-display mt-3 text-4xl font-semibold text-ivory sm:text-5xl">Page not found</h1>
-      <p className="mt-4 text-sm leading-6 text-secondary">That address is not part of the IMR portal.</p>
-      <Link href="/" className="btn btn-primary mt-8">
+    <div className="page-wrap max-w-lg py-20">
+      <p className="text-sm text-muted-foreground">404</p>
+      <h1 className="mt-2 text-3xl font-semibold tracking-tight">Page not found</h1>
+      <p className="mt-3 text-sm leading-6 text-muted-foreground">That address is not part of the IMR portal.</p>
+      <Button nativeButton={false} className="mt-8" render={<Link href="/" />}>
         Return home
-      </Link>
+      </Button>
     </div>
   );
 }

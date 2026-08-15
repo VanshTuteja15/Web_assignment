@@ -1,17 +1,17 @@
 /**
  * File: src/lib/supabase/env.ts
- * Student: Vansh Tuteja
- * Date: August 12, 2026
+ * Student: Group 12
+ * Date: August 15, 2026
  * Course: Full-Stack Web Applications — SAIT
  *
  * Description:
- * Reads the public Supabase URL and anon/publishable key from environment
- * variables. Only public credentials are used. The service-role key is never
- * read by this application, which keeps privileged access off the client
- * and out of the Next.js bundle.
+ * Reads the public Supabase URL and anon key from environment variables.
+ * Only public credentials are used. The service-role key is never read by
+ * this application, which keeps privileged access off the client and out
+ * of the Next.js bundle.
  *
  * Inputs: process.env values set in .env.local or the host (Vercel).
- * Processing: Trims values and accepts either ANON_KEY or PUBLISHABLE_KEY names.
+ * Processing: Trims values and prefers ANON_KEY, with PUBLISHABLE_KEY as alias.
  * Outputs: A config object, or null when the project has not been configured yet.
  */
 

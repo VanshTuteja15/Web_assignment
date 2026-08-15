@@ -1,7 +1,7 @@
 /**
  * File: src/app/movies/[id]/edit/page.tsx
- * Student: Vansh Tuteja
- * Date: August 12, 2026
+ * Student: Group 12
+ * Date: August 15, 2026
  * Course: Full-Stack Web Applications — SAIT
  *
  * Description:
@@ -20,6 +20,7 @@ import { updateMovieAction } from "@/actions/movies";
 import { MovieForm } from "@/components/MovieForm";
 import { PageHero } from "@/components/PageHero";
 import { StatusBanner } from "@/components/StatusBanner";
+import { Button } from "@/components/ui/button";
 import { getAuthState } from "@/lib/auth";
 import { getMovieById } from "@/lib/movies";
 
@@ -41,7 +42,7 @@ export default async function EditMoviePage({
   const result = await getMovieById(id);
 
   return (
-    <div className="mx-auto max-w-2xl px-4 py-10 sm:px-6">
+    <div className="page-wrap max-w-2xl py-10">
       <PageHero
         kicker="Administrator"
         title="Edit title"
@@ -52,9 +53,9 @@ export default async function EditMoviePage({
       ) : (
         <div className="space-y-4">
           <StatusBanner tone="error" message={result.message} />
-          <Link href="/movies" className="btn btn-secondary">
-            Back to catalogue
-          </Link>
+          <Button nativeButton={false} variant="outline" render={<Link href="/movies" />}>
+            Back to movies
+          </Button>
         </div>
       )}
     </div>

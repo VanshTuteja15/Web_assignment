@@ -1,7 +1,7 @@
 /**
  * File: src/app/error.tsx
- * Student: Vansh Tuteja
- * Date: August 12, 2026
+ * Student: Group 12
+ * Date: August 15, 2026
  * Course: Full-Stack Web Applications — SAIT
  *
  * Description:
@@ -16,6 +16,8 @@
 
 "use client";
 
+import { Button } from "@/components/ui/button";
+
 type ErrorPageProps = {
   error: Error & { digest?: string };
   reset: () => void;
@@ -23,15 +25,15 @@ type ErrorPageProps = {
 
 export default function ErrorPage({ reset }: ErrorPageProps) {
   return (
-    <div className="mx-auto max-w-lg px-4 py-16 text-center sm:px-6">
-      <p className="kicker">Portal error</p>
-      <h1 className="font-display mt-3 text-4xl font-semibold text-ivory sm:text-5xl">Something went wrong</h1>
-      <p className="mt-4 text-sm leading-6 text-secondary">
+    <div className="page-wrap max-w-lg py-20">
+      <p className="text-sm text-muted-foreground">Error</p>
+      <h1 className="mt-2 text-3xl font-semibold tracking-tight">Something went wrong</h1>
+      <p className="mt-3 text-sm leading-6 text-muted-foreground">
         The portal hit an unexpected error. Try again. If it continues, check that Supabase is reachable.
       </p>
-      <button type="button" onClick={reset} className="btn btn-primary mt-8">
+      <Button type="button" className="mt-8" onClick={reset}>
         Try again
-      </button>
+      </Button>
     </div>
   );
 }

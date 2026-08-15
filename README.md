@@ -1,23 +1,23 @@
 # IMR Movie Portal
 
-Staff portal for the **Internet Movies Rental Company (IMR)**. Members sign in to browse the catalogue. Administrators add, edit, and delete titles. Every movie row is stored in Supabase — the page never uses a hard-coded list as the database.
+Staff and public portal for the **Internet Movies Rental Company (IMR)**. Anyone can browse the movie catalogue. Administrators sign in to add, edit, and delete titles. Every movie row is stored in Supabase — the page never uses a hard-coded list as the database.
 
-This is a solo SAIT Full-Stack Web Applications assignment by **Vansh Tuteja**.
+This is a SAIT Full-Stack Web Applications assignment by **Group 12**.
 
 ---
 
 ## Assignment purpose
 
-IMR needs a web portal for its movie database with two authentication levels. The application is built with Node.js, Next.js, and Supabase, and includes a custom navbar, a company footer, a movie list (title, actors, release year), full CRUD for administrators, and Row Level Security so members cannot bypass the UI.
+IMR needs a web portal for its movie database with two authentication levels. The application is built with Next.js and Supabase, and includes a custom navbar, a company footer, a movie list (title, actors, release year), full CRUD for administrators, and Row Level Security so viewers cannot bypass the UI.
 
 ## Features
 
+- Public catalogue: guests can browse without signing in
 - Sign up, sign in, and sign out with Supabase Auth
-- Regular members: view the catalogue only
+- Viewers: read-only list (same as guests, with a signed-in session)
 - Administrators: add, edit, and delete movies
 - Movie cards show title, actors, and release year
 - Client and server validation for every write
-- Search and sort on the catalogue page
 - Loading, empty, error, and confirmation states
 - Responsive layout (mobile through desktop)
 
@@ -27,9 +27,8 @@ IMR needs a web portal for its movie database with two authentication levels. Th
 | --- | --- |
 | Framework | Next.js 16 (App Router) |
 | Language | TypeScript |
-| UI | React 19, Tailwind CSS 4 |
+| UI | React 19, Tailwind CSS 4, shadcn/ui |
 | Auth + database | Supabase (Postgres, Auth, RLS) |
-| Tests | Vitest |
 
 ## Project structure
 
@@ -40,21 +39,22 @@ imr-portal/
 │   ├── actions/             Server Actions (auth + movie CRUD)
 │   ├── components/          Navbar, Footer, MovieList, forms, dialogs
 │   ├── lib/                 Validation, types, Supabase clients, data access
-│   └── proxy.ts             Session refresh and coarse route protection
+│   └── proxy.ts             Session refresh and add/edit route protection
 ├── supabase/schema.sql      Tables, RLS, triggers, seed movies
-├── tests/                   Validation and error-mapping specs
-├── .env.example             Public credential placeholders
+├── .env.local.example       Public credential placeholders
 └── README.md
 ```
 
 ## Environment variables
 
-Copy `.env.example` to `.env.local` (already done on this machine):
+Copy `.env.local.example` to `.env.local`:
 
 | Variable | Required | Purpose |
 | --- | --- | --- |
 | `NEXT_PUBLIC_SUPABASE_URL` | Yes | Project URL from Supabase → Project Settings → API |
-| `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` or `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Yes | Anon / publishable key. Safe in the browser. RLS protects the data. |
+| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Yes | Anon / publishable key. Safe in the browser. RLS protects the data. |
+
+`NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` is an optional alias for the same key.
 
 Never put the **service-role** key in this project. It is not used.
 
@@ -67,7 +67,7 @@ Never put the **service-role** key in this project. It is not used.
 3. Paste the entire contents of `supabase/schema.sql` and run it.
 4. Open **Authentication → Providers → Email**.
    - For classroom testing, turn **Confirm email** off so sign-up can sign you in immediately.
-5. Copy the Project URL and the anon/publishable key into `.env.local`.
+5. Copy the Project URL and the anon key into `.env.local`.
 
 ### Database structure
 
@@ -77,7 +77,7 @@ Never put the **service-role** key in this project. It is not used.
 | --- | --- | --- |
 | `id` | uuid | Matches `auth.users.id` |
 | `email` | text | Unique |
-| `role` | text | `user` or `admin` |
+| `role` | text | `viewer` or `admin` |
 | `created_at` | timestamptz | |
 
 **`public.movies`**
@@ -89,21 +89,21 @@ Never put the **service-role** key in this project. It is not used.
 | `actors` | text[] | 1–20 names |
 | `release_year` | integer | 1888–2100 (app also caps at next calendar year) |
 | `created_at` | timestamptz | |
-| `updated_at` | timestamptz | Maintained by a trigger |
 
-A trigger on `auth.users` inserts a `profiles` row with `role = 'user'` on every sign-up.
+A trigger on `auth.users` inserts a `profiles` row with `role = 'viewer'` on every sign-up.
 
 ### Row Level Security
 
-- Authenticated users may **select** movies.
+- **Anyone** (`anon` and `authenticated`) may **select** movies.
 - Only `public.is_admin()` may **insert, update, or delete** movies.
 - Users may read their own profile; admins may read all profiles.
+- Profile inserts must use `role = 'viewer'` — nobody can self-promote through the API.
 
-Hiding buttons in the UI is not enough. A member who calls the Data API with their own session still cannot change rows.
+Hiding buttons in the UI is not enough. A viewer who calls the Data API with their own session still cannot change rows.
 
 ### Authentication setup
 
-Email/password through Supabase Auth. New accounts are regular members.
+Email/password through Supabase Auth. New accounts are viewers. The catalogue itself does not require a login.
 
 ### Admin setup
 
@@ -113,7 +113,7 @@ Email/password through Supabase Auth. New accounts are regular members.
 ```sql
 update public.profiles
    set role = 'admin'
- where email = 'vansh.tuteja@edu.sait.ca';
+ where email = 'YOUR_EMAIL';
 ```
 
 3. Sign out and sign in again so the portal reloads your role.
@@ -121,9 +121,8 @@ update public.profiles
 ## Local installation
 
 ```bash
-cd imr-portal
 npm install
-cp .env.example .env.local
+cp .env.local.example .env.local
 ```
 
 Fill `.env.local`, then run `supabase/schema.sql` in the Supabase SQL Editor.
@@ -143,45 +142,30 @@ npm run build
 npm start
 ```
 
-## Testing
-
-```bash
-npm test
-npm run lint
-```
-
-`npm test` runs Vitest against validation and error mapping (empty fields, invalid years, permission messages, and valid payloads).
-
-Manual checks after Supabase is connected:
-
-1. Sign up as a regular member → catalogue visible, no Add/Edit/Delete.
-2. Open `/movies/new` as that member → redirected to `/forbidden`.
-3. Promote the account to admin in SQL, sign in again → Add/Edit/Delete work and persist in the Table Editor.
-4. Submit empty title, comma-only actors, and year `3000` → form refuses the save.
-5. Delete a title → confirmation dialog, then the row disappears from Supabase.
-
 ## Deployment (Vercel)
 
-The project is **deployment-ready**. It is not claimed as live until you complete these steps:
+The project is **deployment-ready**. Complete these steps to go live:
 
-1. Push `imr-portal` to GitHub (this folder is the app root).
+1. Push this repository to GitHub (this folder is the app root).
 2. Import the repo in [Vercel](https://vercel.com).
-3. Set `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` in the Vercel project environment.
+3. Set these environment variables in the Vercel project settings:
+   - `NEXT_PUBLIC_SUPABASE_URL`
+   - `NEXT_PUBLIC_SUPABASE_ANON_KEY`
 4. In Supabase → Authentication → URL configuration, add `https://YOUR-PROJECT.vercel.app` to **Site URL** and **Redirect URLs**.
-5. Deploy. Confirm `/movies` loads after sign-in.
+5. Deploy. Confirm `/movies` loads for guests and that admin CRUD still works after sign-in.
 
 ## Known limitations
 
 - Email confirmation, if left enabled in Supabase, requires the visitor to confirm before a session exists. Disable it for local demos or tell testers to check their inbox.
 - Administrator promotion is a one-line SQL update. There is no “make admin” button in the UI, on purpose.
-- The publishable/anon key is public by design. Security comes from RLS, not from hiding that key.
+- The anon key is public by design. Security comes from RLS, not from hiding that key.
 
 ## Main routes
 
 | Path | Who |
 | --- | --- |
 | `/` | Everyone (landing) |
+| `/movies` | Everyone (public catalogue) |
 | `/login`, `/signup` | Visitors |
-| `/movies` | Signed-in members and admins |
-| `/movies/new`, `/movies/[id]/edit`, `/admin` | Administrators |
-| `/forbidden` | Members who open an admin URL |
+| `/movies/new`, `/movies/[id]/edit` | Administrators |
+| `/forbidden` | Viewers who open an admin URL |

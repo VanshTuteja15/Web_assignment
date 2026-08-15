@@ -1,14 +1,15 @@
 /**
  * File: src/lib/movies.ts
- * Student: Vansh Tuteja
- * Date: August 12, 2026
+ * Student: Group 12
+ * Date: August 15, 2026
  * Course: Full-Stack Web Applications — SAIT
  *
  * Description:
  * Server-side data access for the movies table. Pages call these helpers
  * instead of embedding Supabase queries in JSX. Failures are returned as
  * structured results so the UI can show a friendly empty or error state
- * rather than crashing the route.
+ * rather than crashing the route. Guests may list movies because RLS
+ * allows anonymous SELECT.
  *
  * Inputs: Optional movie id; the caller's Auth cookies are read by the client.
  * Processing: Queries public.movies through the user's Supabase session.
@@ -36,9 +37,10 @@ export async function listMovies(): Promise<MovieListResult> {
     };
   }
 
+  // --- Fetch movies ---
   const { data, error } = await supabase
     .from("movies")
-    .select("id, title, actors, release_year, created_at, updated_at")
+    .select("id, title, actors, release_year, created_at")
     .order("title", { ascending: true });
 
   if (error) {
@@ -63,7 +65,7 @@ export async function getMovieById(id: string): Promise<MovieItemResult> {
 
   const { data, error } = await supabase
     .from("movies")
-    .select("id, title, actors, release_year, created_at, updated_at")
+    .select("id, title, actors, release_year, created_at")
     .eq("id", id)
     .maybeSingle<Movie>();
 

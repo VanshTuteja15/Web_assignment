@@ -1,7 +1,7 @@
 /**
  * File: src/components/SetupNotice.tsx
- * Student: Vansh Tuteja
- * Date: August 12, 2026
+ * Student: Group 12
+ * Date: August 15, 2026
  * Course: Full-Stack Web Applications — SAIT
  *
  * Description:
@@ -14,26 +14,27 @@
  * Outputs: A visible configuration warning.
  */
 
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
+
 export function SetupNotice() {
   return (
-    <section role="status" className="card-surface mx-auto max-w-3xl border-danger/40 px-5 py-6 text-ivory">
-      <h2 className="font-display text-3xl font-semibold text-ivory">Supabase is not configured yet</h2>
-      <p className="mt-3 text-sm leading-6 text-secondary">
-        The application is running, but it has no database credentials. Add them locally, then reload.
-      </p>
-      <ol className="mt-4 list-decimal space-y-2 pl-5 text-sm leading-6 text-secondary">
-        <li>
-          Create a free project at supabase.com and run <code className="text-gold-soft">supabase/schema.sql</code> in
-          the SQL Editor.
-        </li>
-        <li>
-          Copy <code className="text-gold-soft">.env.example</code> to <code className="text-gold-soft">.env.local</code>.
-        </li>
-        <li>Paste the Project URL and anon (publishable) key. Never paste the service-role key.</li>
-        <li>
-          Restart <code className="text-gold-soft">npm run dev</code>.
-        </li>
-      </ol>
-    </section>
+    <Alert variant="destructive">
+      <AlertTitle>Supabase is not configured yet</AlertTitle>
+      <AlertDescription>
+        <p className="mb-3">The application is running, but it has no database credentials. Add them locally, then reload.</p>
+        <ol className="list-decimal space-y-1 pl-5">
+          <li>
+            Create a free project at supabase.com and run <code>supabase/schema.sql</code> in the SQL Editor.
+          </li>
+          <li>
+            Copy <code>.env.local.example</code> to <code>.env.local</code>.
+          </li>
+          <li>Paste the Project URL and anon key. Never paste the service-role key.</li>
+          <li>
+            Restart <code>npm run dev</code>.
+          </li>
+        </ol>
+      </AlertDescription>
+    </Alert>
   );
 }

@@ -1,28 +1,39 @@
 /**
  * File: src/components/Navbar.tsx
- * Student: Vansh Tuteja
- * Date: August 12, 2026
+ * Student: Group 12
+ * Date: August 15, 2026
  * Course: Full-Stack Web Applications — SAIT
  *
  * Description:
- * Custom static site header for IMR. Links are fixed in the source (Home,
- * Catalogue, Admin, Sign in / Sign up). The mobile disclosure is the only
- * interactive piece. Admin links are hidden for regular users, but the
- * matching routes still enforce Auth and RLS on the server.
+ * Site header for IMR. Links are fixed in the source (Home, Movies, Sign in
+ * / Sign up). The mobile sheet is the only interactive piece. Admin tools
+ * stay on the catalogue page; this bar only shows login or logout state.
  *
  * Inputs: AuthState and whether Supabase credentials are present.
- * Processing: Renders navigation, a mobile menu, and a sign-out form.
+ * Processing: Renders navigation, a mobile sheet, and a sign-out form.
  * Outputs: The header landmark shown on every page.
  */
 
 "use client";
 
+import { Menu } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { signOutAction } from "@/actions/auth";
+import { Badge } from "@/components/ui/badge";
+import { Button, buttonVariants } from "@/components/ui/button";
+import { Separator } from "@/components/ui/separator";
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
 import { COMPANY } from "@/lib/constants";
 import type { AuthState } from "@/lib/types";
+import { cn } from "@/lib/utils";
 
 type NavbarProps = {
   auth: AuthState;
@@ -43,114 +54,123 @@ export function Navbar({ auth, configured }: NavbarProps) {
 
   const links = [
     { href: "/", label: "Home" },
-    { href: "/movies", label: "Catalogue" },
-    ...(auth.isAdmin ? [{ href: "/admin", label: "Admin" }] : []),
+    { href: "/movies", label: "Movies" },
   ];
 
   return (
-    <header className="sticky top-0 z-40 border-b border-[var(--border)] bg-[color:rgb(10_0_23_/_0.88)] backdrop-blur-md">
+    <header className="sticky top-0 z-40 border-b border-white/10 bg-black/50 backdrop-blur-md">
       <a
         href="#main-content"
-        className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-3 focus:z-50 focus:rounded-md focus:bg-gold focus:px-3 focus:py-2 focus:text-booth"
+        className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-3 focus:z-50 focus:rounded-md focus:bg-foreground focus:px-3 focus:py-2 focus:text-background"
       >
         Skip to content
       </a>
-      <nav aria-label="Primary" className="page-wrap relative flex items-center justify-between gap-4 py-3">
-        <Link href="/" className="group flex min-h-11 items-center gap-3 cursor-pointer" onClick={() => setOpen(false)}>
-          <span className="grid h-11 w-11 place-items-center rounded-xl border border-gold/50 bg-velvet text-gold" aria-hidden="true">
-            <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="1.7">
-              <rect x="3" y="5" width="18" height="14" rx="2" />
-              <path d="M8 5v14M16 5v14M3 9h18M3 15h18" />
-            </svg>
+      <nav aria-label="Primary" className="page-wrap flex h-14 items-center gap-4">
+        <Link href="/" className="flex items-center gap-2 text-sm font-semibold tracking-tight">
+          <span className="grid size-6 place-items-center rounded-md bg-foreground text-[11px] font-bold text-background">
+            {COMPANY.shortName}
           </span>
-          <span>
-            <span className="font-display block text-2xl font-semibold leading-none text-ivory group-hover:text-gold-soft transition-colors duration-200">
-              {COMPANY.shortName}
-            </span>
-            <span className="block text-[0.68rem] font-medium uppercase tracking-[0.18em] text-secondary">
-              Movie rentals
-            </span>
-          </span>
+          <span className="hidden sm:inline">{COMPANY.name}</span>
         </Link>
 
-        <button
-          type="button"
-          className="inline-flex min-h-11 min-w-11 items-center justify-center rounded-xl border border-[var(--border)] text-ivory cursor-pointer md:hidden"
-          aria-expanded={open}
-          aria-controls="primary-links"
-          onClick={() => setOpen((value) => !value)}
-        >
-          <span className="sr-only">{open ? "Close menu" : "Open menu"}</span>
-          <svg viewBox="0 0 24 24" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="1.8" aria-hidden="true">
-            {open ? (
-              <path d="M6 6l12 12M18 6L6 18" />
-            ) : (
-              <path d="M4 7h16M4 12h16M4 17h16" />
-            )}
-          </svg>
-        </button>
-
-        <div
-          id="primary-links"
-          className={`${open ? "flex" : "hidden"} absolute left-0 right-0 top-full z-30 flex-col gap-1 border-b border-[var(--border)] bg-booth px-4 py-4 md:static md:flex md:flex-row md:items-center md:gap-1 md:border-0 md:bg-transparent md:p-0`}
-        >
+        <div className="ml-6 hidden items-center gap-1 md:flex">
           {links.map((link) => {
             const active = isActivePath(pathname, link.href);
             return (
-              <Link
+              <Button
                 key={link.href}
-                href={link.href}
-                aria-current={active ? "page" : undefined}
-                className={`min-h-11 rounded-lg px-3 py-2 text-sm font-semibold tracking-wide transition-colors duration-200 cursor-pointer ${
-                  active
-                    ? "text-gold-soft bg-gold/10"
-                    : "text-secondary hover:text-ivory hover:bg-white/5"
-                }`}
-                onClick={() => setOpen(false)}
+                variant="ghost"
+                size="sm"
+                nativeButton={false}
+                render={<Link href={link.href} />}
+                className={cn(active && "bg-muted")}
               >
                 {link.label}
-              </Link>
+              </Button>
             );
           })}
-
-          <div className="mt-2 flex flex-col gap-2 border-t border-[var(--border)] pt-3 md:mt-0 md:ml-3 md:flex-row md:items-center md:border-t-0 md:pt-0">
-            {signedIn ? (
-              <>
-                <p className="px-2 text-sm text-secondary">
-                  <span className="block font-medium text-ivory">{auth.email}</span>
-                  <span className={`mt-1 badge ${auth.isAdmin ? "badge-admin" : "badge-member"}`}>
-                    {auth.isAdmin ? "Admin" : "Member"}
-                  </span>
-                </p>
-                <form action={signOutAction}>
-                  <button type="submit" className="btn btn-secondary w-full md:w-auto">
-                    Sign out
-                  </button>
-                </form>
-              </>
-            ) : (
-              <>
-                <Link
-                  href="/login"
-                  className="btn btn-secondary w-full md:w-auto"
-                  onClick={() => setOpen(false)}
-                >
-                  Sign in
-                </Link>
-                <Link
-                  href="/signup"
-                  className="btn btn-primary w-full md:w-auto"
-                  onClick={() => setOpen(false)}
-                >
-                  Sign up
-                </Link>
-              </>
-            )}
-            {!configured ? (
-              <span className="px-2 text-xs font-semibold uppercase tracking-[0.12em] text-danger">Setup needed</span>
-            ) : null}
-          </div>
         </div>
+
+        <div className="ml-auto hidden items-center gap-2 md:flex">
+          {signedIn ? (
+            <>
+              <div className="hidden items-center gap-2 lg:flex">
+                <span className="max-w-[14rem] truncate text-sm text-muted-foreground">{auth.email}</span>
+                <Badge variant={auth.isAdmin ? "default" : "secondary"}>
+                  {auth.isAdmin ? "Admin" : "Viewer"}
+                </Badge>
+              </div>
+              <form action={signOutAction}>
+                <Button type="submit" variant="outline" size="sm">
+                  Sign out
+                </Button>
+              </form>
+            </>
+          ) : (
+            <>
+              <Button nativeButton={false} variant="ghost" size="sm" render={<Link href="/login" />}>
+                Sign in
+              </Button>
+              <Button nativeButton={false} size="sm" render={<Link href="/signup" />}>
+                Sign up
+              </Button>
+            </>
+          )}
+          {!configured ? (
+            <Badge variant="destructive">Setup needed</Badge>
+          ) : null}
+        </div>
+
+        <Sheet open={open} onOpenChange={setOpen}>
+          <SheetTrigger className={cn(buttonVariants({ variant: "ghost", size: "icon" }), "ml-auto md:hidden")}>
+            <Menu />
+            <span className="sr-only">Open menu</span>
+          </SheetTrigger>
+          <SheetContent side="right" className="w-72">
+            <SheetHeader>
+              <SheetTitle>{COMPANY.shortName}</SheetTitle>
+            </SheetHeader>
+            <div className="flex flex-col gap-1 px-4">
+              {links.map((link) => (
+                <Button
+                  key={link.href}
+                  variant="ghost"
+                  className="justify-start"
+                  nativeButton={false}
+                  render={<Link href={link.href} />}
+                  onClick={() => setOpen(false)}
+                >
+                  {link.label}
+                </Button>
+              ))}
+            </div>
+            <Separator />
+            <div className="flex flex-col gap-2 px-4 pb-4">
+              {signedIn ? (
+                <>
+                  <p className="text-sm text-muted-foreground">{auth.email}</p>
+                  <Badge variant={auth.isAdmin ? "default" : "secondary"} className="w-fit">
+                    {auth.isAdmin ? "Admin" : "Viewer"}
+                  </Badge>
+                  <form action={signOutAction}>
+                    <Button type="submit" variant="outline" className="w-full">
+                      Sign out
+                    </Button>
+                  </form>
+                </>
+              ) : (
+                <>
+                  <Button nativeButton={false} variant="outline" render={<Link href="/login" />} onClick={() => setOpen(false)}>
+                    Sign in
+                  </Button>
+                  <Button nativeButton={false} render={<Link href="/signup" />} onClick={() => setOpen(false)}>
+                    Sign up
+                  </Button>
+                </>
+              )}
+            </div>
+          </SheetContent>
+        </Sheet>
       </nav>
     </header>
   );

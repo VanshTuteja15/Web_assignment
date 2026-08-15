@@ -1,7 +1,7 @@
 /**
  * File: src/components/AuthForm.tsx
- * Student: Vansh Tuteja
- * Date: August 12, 2026
+ * Student: Group 12
+ * Date: August 15, 2026
  * Course: Full-Stack Web Applications — SAIT
  *
  * Description:
@@ -20,6 +20,10 @@ import Link from "next/link";
 import { useActionState } from "react";
 import type { AuthFormState } from "@/actions/auth";
 import { StatusBanner } from "@/components/StatusBanner";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardFooter } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 
 type AuthFormProps = {
   mode: "login" | "signup";
@@ -34,85 +38,72 @@ export function AuthForm({ mode, action, nextPath }: AuthFormProps) {
   const isSignup = mode === "signup";
 
   return (
-    <form action={formAction} className="card-surface space-y-5 p-5 sm:p-8" noValidate>
-      {nextPath ? <input type="hidden" name="next" value={nextPath} /> : null}
-      {state.message ? (
-        <StatusBanner
-          tone={state.message.toLowerCase().includes("account created") ? "info" : "error"}
-          message={state.message}
-        />
-      ) : null}
+    <form action={formAction} noValidate>
+      <Card>
+        <CardContent className="space-y-4">
+          {nextPath ? <input type="hidden" name="next" value={nextPath} /> : null}
+          {state.message ? (
+            <StatusBanner
+              tone={state.message.toLowerCase().includes("account created") ? "info" : "error"}
+              message={state.message}
+            />
+          ) : null}
 
-      <div>
-        <label htmlFor="email" className="block text-xs font-semibold uppercase tracking-[0.16em] text-secondary">
-          Email
-        </label>
-        <input
-          id="email"
-          name="email"
-          type="email"
-          autoComplete="email"
-          required
-          className="field"
-        />
-      </div>
+          <div className="space-y-2">
+            <Label htmlFor="email">Email</Label>
+            <Input id="email" name="email" type="email" autoComplete="email" required />
+          </div>
 
-      <div>
-        <label htmlFor="password" className="block text-xs font-semibold uppercase tracking-[0.16em] text-secondary">
-          Password
-        </label>
-        <input
-          id="password"
-          name="password"
-          type="password"
-          autoComplete={isSignup ? "new-password" : "current-password"}
-          required
-          minLength={isSignup ? 8 : undefined}
-          className="field"
-        />
-        {isSignup ? (
-          <p className="mt-1 text-xs text-muted">At least 8 characters.</p>
-        ) : null}
-      </div>
+          <div className="space-y-2">
+            <Label htmlFor="password">Password</Label>
+            <Input
+              id="password"
+              name="password"
+              type="password"
+              autoComplete={isSignup ? "new-password" : "current-password"}
+              required
+              minLength={isSignup ? 8 : undefined}
+            />
+            {isSignup ? <p className="text-xs text-muted-foreground">At least 8 characters.</p> : null}
+          </div>
 
-      {isSignup ? (
-        <div>
-          <label htmlFor="confirmPassword" className="block text-xs font-semibold uppercase tracking-[0.16em] text-secondary">
-            Confirm password
-          </label>
-          <input
-            id="confirmPassword"
-            name="confirmPassword"
-            type="password"
-            autoComplete="new-password"
-            required
-            minLength={8}
-            className="field"
-          />
-        </div>
-      ) : null}
-
-      <button type="submit" disabled={pending} className="btn btn-primary w-full">
-        {pending ? "Please wait…" : isSignup ? "Create account" : "Sign in"}
-      </button>
-
-      <p className="text-center text-sm text-secondary">
-        {isSignup ? (
-          <>
-            Already have an account?{" "}
-            <Link href="/login" className="font-semibold text-gold-soft hover:text-gold cursor-pointer">
-              Sign in
-            </Link>
-          </>
-        ) : (
-          <>
-            New to IMR?{" "}
-            <Link href="/signup" className="font-semibold text-gold-soft hover:text-gold cursor-pointer">
-              Create an account
-            </Link>
-          </>
-        )}
-      </p>
+          {isSignup ? (
+            <div className="space-y-2">
+              <Label htmlFor="confirmPassword">Confirm password</Label>
+              <Input
+                id="confirmPassword"
+                name="confirmPassword"
+                type="password"
+                autoComplete="new-password"
+                required
+                minLength={8}
+              />
+            </div>
+          ) : null}
+        </CardContent>
+        <CardFooter className="flex-col gap-3">
+          <Button type="submit" className="w-full" disabled={pending}>
+            {pending ? "Please wait…" : isSignup ? "Create account" : "Sign in"}
+          </Button>
+          <p className="text-center text-sm text-muted-foreground">
+            {isSignup ? (
+              <>
+                Already have an account?{" "}
+                <Link href="/login" className="font-medium text-foreground underline-offset-4 hover:underline">
+                  Sign in
+                </Link>
+              </>
+            ) : (
+              <>
+                New to IMR?{" "}
+                <Link href="/signup" className="font-medium text-foreground underline-offset-4 hover:underline">
+                  Create an account
+                </Link>
+              </>
+            )}
+          </p>
+        </CardFooter>
+      </Card>
     </form>
   );
 }

@@ -10,9 +10,6 @@
 !.yarn/releases
 !.yarn/versions
 
-# testing
-/coverage
-
 # next.js
 /.next/
 /out/
@@ -30,7 +27,7 @@ yarn-debug.log*
 yarn-error.log*
 .pnpm-debug.log*
 
-# env files — keep .env.example in version control
+# env files — keep .env.example and .env.local.example in version control
 .env
 .env.local
 .env.*.local

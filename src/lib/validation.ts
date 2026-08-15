@@ -1,7 +1,7 @@
 /**
  * File: src/lib/validation.ts
- * Student: Vansh Tuteja
- * Date: August 12, 2026
+ * Student: Group 12
+ * Date: August 15, 2026
  * Course: Full-Stack Web Applications — SAIT
  *
  * Description:
@@ -9,7 +9,7 @@
  * The same functions run in the browser (fast feedback) and again inside
  * server actions (so a user cannot bypass the form with a crafted request).
  * Rules cover required fields, trimming, length limits, actor lists, and
- * a realistic release-year range.
+ * a four-digit release-year range.
  *
  * Inputs: Raw strings from forms (title, actors, release year, email, password).
  * Processing: Trims whitespace, splits actor names, parses integers, and
@@ -97,8 +97,8 @@ export function validateMovieInput(
 
   if (!yearRaw) {
     fieldErrors.releaseYear = "Release year is required.";
-  } else if (!/^-?\d+$/.test(yearRaw)) {
-    fieldErrors.releaseYear = "Release year must be a whole number.";
+  } else if (!/^\d{4}$/.test(yearRaw)) {
+    fieldErrors.releaseYear = "Release year must be a 4-digit number.";
   } else {
     const year = Number.parseInt(yearRaw, 10);
     if (year < MIN_RELEASE_YEAR) {
