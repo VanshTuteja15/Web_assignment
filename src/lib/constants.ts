@@ -1,7 +1,7 @@
 /**
  * File: src/lib/constants.ts
- * Student: Vansh Tuteja
- * Date: August 12, 2026
+ * Student: Group 12
+ * Date: August 15, 2026
  * Course: Full-Stack Web Applications — SAIT
  *
  * Description:
@@ -39,4 +39,10 @@ export const COMPANY = {
   phone: "(403) 555-0148",
   email: "catalogue@imr-rentals.ca",
   hours: "Daily 10:00–22:00 (Mountain Time)",
+} as const;
+
+/** Classroom demo administrator. Shown on a public banner so testers can sign in. */
+export const DEMO_ADMIN = {
+  email: "admin@gmail.com",
+  password: "Admin123",
 } as const;

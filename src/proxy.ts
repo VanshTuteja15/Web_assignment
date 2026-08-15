@@ -1,14 +1,14 @@
 /**
  * File: src/proxy.ts
- * Student: Vansh Tuteja
- * Date: August 12, 2026
+ * Student: Group 12
+ * Date: August 15, 2026
  * Course: Full-Stack Web Applications — SAIT
  *
  * Description:
  * Next.js 16 network proxy. It runs before matched routes so expired Auth
- * cookies can be refreshed and unauthenticated visitors cannot open the
- * catalogue or admin pages by typing a URL. Fine-grained admin checks still
- * belong in server actions and Supabase Row Level Security.
+ * cookies can be refreshed. Guests may browse the catalogue. Add and edit
+ * URLs require a session; fine-grained admin checks still belong in server
+ * actions and Supabase Row Level Security.
  *
  * Inputs: Every non-static request that matches the matcher below.
  * Processing: Delegates to updateSession, which talks to Supabase Auth.

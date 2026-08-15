@@ -1,13 +1,14 @@
 /**
  * File: src/app/movies/page.tsx
- * Student: Vansh Tuteja
- * Date: August 12, 2026
+ * Student: Group 12
+ * Date: August 15, 2026
  * Course: Full-Stack Web Applications — SAIT
  *
  * Description:
- * Authenticated movie list page. Rows come from Supabase. Title, actors,
- * and release year are always shown. Administrators also receive add, edit,
- * and delete controls. Loading, empty, and error states are all handled.
+ * Public movie list page. Rows come from Supabase. Title, actors, and
+ * release year are always shown. Administrators also receive add, edit,
+ * and delete controls. Guests and viewers see a read-only catalogue.
+ * Loading, empty, and error states are all handled.
  *
  * Inputs: Optional `status` query flag after a successful write; Auth cookies.
  * Processing: Loads movies on the server, then hands them to MovieList.
@@ -19,6 +20,7 @@ import { MovieList } from "@/components/MovieList";
 import { PageHero } from "@/components/PageHero";
 import { SetupNotice } from "@/components/SetupNotice";
 import { StatusBanner } from "@/components/StatusBanner";
+import { Button } from "@/components/ui/button";
 import { getAuthState } from "@/lib/auth";
 import { listMovies } from "@/lib/movies";
 import { isSupabaseConfigured } from "@/lib/supabase/env";
@@ -48,14 +50,14 @@ export default async function MoviesPage({
   return (
     <div className="page-wrap py-10">
       <PageHero
-        kicker="IMR catalogue"
-        title="IMR Movie Library"
-        description="Explore and manage the Internet Movies Rental Company collection. Every card lists the title, billed actors, and release year."
+        kicker="Catalogue"
+        title="Movies"
+        description="Title, billed actors, and release year for every IMR rental."
         actions={
           auth.isAdmin ? (
-            <Link href="/movies/new" className="btn btn-primary">
+            <Button nativeButton={false} render={<Link href="/movies/new" />}>
               Add movie
-            </Link>
+            </Button>
           ) : null
         }
       />

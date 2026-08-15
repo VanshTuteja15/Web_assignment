@@ -1,7 +1,7 @@
 /**
  * File: src/components/MovieForm.tsx
- * Student: Vansh Tuteja
- * Date: August 12, 2026
+ * Student: Group 12
+ * Date: August 15, 2026
  * Course: Full-Stack Web Applications — SAIT
  *
  * Description:
@@ -19,6 +19,10 @@
 import Link from "next/link";
 import { useActionState, useState } from "react";
 import { StatusBanner } from "@/components/StatusBanner";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardFooter } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import type { ActionResult, FieldErrors, Movie } from "@/lib/types";
 import { formatActors, validateMovieInput } from "@/lib/validation";
 
@@ -56,98 +60,91 @@ export function MovieForm({ movie, action, submitLabel }: MovieFormProps) {
   }
 
   return (
-    <form action={handleSubmit} className="card-surface space-y-5 p-5 sm:p-8" noValidate>
-      {movie ? <input type="hidden" name="id" value={movie.id} /> : null}
+    <form action={handleSubmit} noValidate>
+      <Card>
+        <CardContent className="space-y-5">
+          {movie ? <input type="hidden" name="id" value={movie.id} /> : null}
 
-      {state && !state.ok && !state.fieldErrors ? <StatusBanner tone="error" message={state.message} /> : null}
-      {state && !state.ok && state.fieldErrors ? <StatusBanner tone="error" message={state.message} /> : null}
+          {state && !state.ok ? <StatusBanner tone="error" message={state.message} /> : null}
 
-      <div>
-        <label htmlFor="title" className="block text-xs font-semibold uppercase tracking-[0.16em] text-secondary">
-          Title
-        </label>
-        <input
-          id="title"
-          name="title"
-          value={title}
-          onChange={(event) => setTitle(event.target.value)}
-          maxLength={200}
-          required
-          autoComplete="off"
-          aria-invalid={Boolean(fieldErrors.title)}
-          aria-describedby={fieldErrors.title ? "title-error" : "title-help"}
-          className="field"
-        />
-        <p id="title-help" className="mt-1 text-xs text-muted">
-          Required. Up to 200 characters.
-        </p>
-        {fieldErrors.title ? (
-          <p id="title-error" role="alert" className="mt-1 text-sm text-danger">
-            {fieldErrors.title}
-          </p>
-        ) : null}
-      </div>
+          <div className="space-y-2">
+            <Label htmlFor="title">Title</Label>
+            <Input
+              id="title"
+              name="title"
+              value={title}
+              onChange={(event) => setTitle(event.target.value)}
+              maxLength={200}
+              required
+              autoComplete="off"
+              aria-invalid={Boolean(fieldErrors.title)}
+              aria-describedby={fieldErrors.title ? "title-error" : "title-help"}
+            />
+            <p id="title-help" className="text-xs text-muted-foreground">
+              Required. Up to 200 characters.
+            </p>
+            {fieldErrors.title ? (
+              <p id="title-error" role="alert" className="text-sm text-destructive">
+                {fieldErrors.title}
+              </p>
+            ) : null}
+          </div>
 
-      <div>
-        <label htmlFor="actors" className="block text-xs font-semibold uppercase tracking-[0.16em] text-secondary">
-          Actors
-        </label>
-        <input
-          id="actors"
-          name="actors"
-          value={actors}
-          onChange={(event) => setActors(event.target.value)}
-          maxLength={500}
-          required
-          autoComplete="off"
-          aria-invalid={Boolean(fieldErrors.actors)}
-          aria-describedby={fieldErrors.actors ? "actors-error" : "actors-help"}
-          placeholder="Michelle Yeoh, Ke Huy Quan"
-          className="field"
-        />
-        <p id="actors-help" className="mt-1 text-xs text-muted">
-          Required. Separate names with commas.
-        </p>
-        {fieldErrors.actors ? (
-          <p id="actors-error" role="alert" className="mt-1 text-sm text-danger">
-            {fieldErrors.actors}
-          </p>
-        ) : null}
-      </div>
+          <div className="space-y-2">
+            <Label htmlFor="actors">Actors</Label>
+            <Input
+              id="actors"
+              name="actors"
+              value={actors}
+              onChange={(event) => setActors(event.target.value)}
+              maxLength={500}
+              required
+              autoComplete="off"
+              aria-invalid={Boolean(fieldErrors.actors)}
+              aria-describedby={fieldErrors.actors ? "actors-error" : "actors-help"}
+              placeholder="Michelle Yeoh, Ke Huy Quan"
+            />
+            <p id="actors-help" className="text-xs text-muted-foreground">
+              Required. Separate names with commas.
+            </p>
+            {fieldErrors.actors ? (
+              <p id="actors-error" role="alert" className="text-sm text-destructive">
+                {fieldErrors.actors}
+              </p>
+            ) : null}
+          </div>
 
-      <div>
-        <label htmlFor="releaseYear" className="block text-xs font-semibold uppercase tracking-[0.16em] text-secondary">
-          Release year
-        </label>
-        <input
-          id="releaseYear"
-          name="releaseYear"
-          inputMode="numeric"
-          value={releaseYear}
-          onChange={(event) => setReleaseYear(event.target.value)}
-          required
-          aria-invalid={Boolean(fieldErrors.releaseYear)}
-          aria-describedby={fieldErrors.releaseYear ? "year-error" : "year-help"}
-          className="field max-w-[12rem]"
-        />
-        <p id="year-help" className="mt-1 text-xs text-muted">
-          Required. A four-digit year, not far in the future.
-        </p>
-        {fieldErrors.releaseYear ? (
-          <p id="year-error" role="alert" className="mt-1 text-sm text-danger">
-            {fieldErrors.releaseYear}
-          </p>
-        ) : null}
-      </div>
-
-      <div className="flex flex-col-reverse gap-3 pt-2 sm:flex-row sm:justify-end">
-        <Link href="/movies" className="btn btn-secondary">
-          Cancel
-        </Link>
-        <button type="submit" disabled={pending} className="btn btn-primary">
-          {pending ? "Saving…" : submitLabel}
-        </button>
-      </div>
+          <div className="max-w-[12rem] space-y-2">
+            <Label htmlFor="releaseYear">Release year</Label>
+            <Input
+              id="releaseYear"
+              name="releaseYear"
+              inputMode="numeric"
+              value={releaseYear}
+              onChange={(event) => setReleaseYear(event.target.value)}
+              required
+              aria-invalid={Boolean(fieldErrors.releaseYear)}
+              aria-describedby={fieldErrors.releaseYear ? "year-error" : "year-help"}
+            />
+            <p id="year-help" className="text-xs text-muted-foreground">
+              Required. A four-digit year between 1888 and next year.
+            </p>
+            {fieldErrors.releaseYear ? (
+              <p id="year-error" role="alert" className="text-sm text-destructive">
+                {fieldErrors.releaseYear}
+              </p>
+            ) : null}
+          </div>
+        </CardContent>
+        <CardFooter className="justify-end gap-2">
+          <Button nativeButton={false} variant="outline" render={<Link href="/movies" />}>
+            Cancel
+          </Button>
+          <Button type="submit" disabled={pending}>
+            {pending ? "Saving…" : submitLabel}
+          </Button>
+        </CardFooter>
+      </Card>
     </form>
   );
 }

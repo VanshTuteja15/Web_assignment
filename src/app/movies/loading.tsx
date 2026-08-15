@@ -1,7 +1,7 @@
 /**
  * File: src/app/movies/loading.tsx
- * Student: Vansh Tuteja
- * Date: August 12, 2026
+ * Student: Group 12
+ * Date: August 15, 2026
  * Course: Full-Stack Web Applications — SAIT
  *
  * Description:
@@ -13,13 +13,15 @@
  * Outputs: A loading UI announced by Next.js during navigation.
  */
 
+import { Skeleton } from "@/components/ui/skeleton";
+
 export default function MoviesLoading() {
   return (
     <div className="page-wrap py-10" aria-busy="true" aria-live="polite">
-      <p className="text-sm font-semibold uppercase tracking-[0.18em] text-secondary">Loading catalogue…</p>
-      <div className="mt-8 grid gap-4">
+      <p className="text-sm text-muted-foreground">Loading catalogue…</p>
+      <div className="mt-8 grid gap-3">
         {Array.from({ length: 4 }).map((_, index) => (
-          <div key={index} className="h-32 animate-pulse rounded-2xl bg-panel" />
+          <Skeleton key={index} className="h-24 w-full rounded-xl" />
         ))}
       </div>
     </div>

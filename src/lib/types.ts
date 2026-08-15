@@ -1,7 +1,7 @@
 /**
  * File: src/lib/types.ts
- * Student: Vansh Tuteja
- * Date: August 12, 2026
+ * Student: Group 12
+ * Date: August 15, 2026
  * Course: Full-Stack Web Applications — SAIT
  *
  * Description:
@@ -15,7 +15,7 @@
  * Outputs: Type aliases consumed by pages, components, and data helpers.
  */
 
-export type UserRole = "user" | "admin";
+export type UserRole = "admin" | "viewer";
 
 export type Profile = {
   id: string;
@@ -30,7 +30,6 @@ export type Movie = {
   actors: string[];
   release_year: number;
   created_at: string;
-  updated_at: string;
 };
 
 export type MovieFormValues = {

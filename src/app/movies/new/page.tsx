@@ -1,13 +1,13 @@
 /**
  * File: src/app/movies/new/page.tsx
- * Student: Vansh Tuteja
- * Date: August 12, 2026
+ * Student: Group 12
+ * Date: August 15, 2026
  * Course: Full-Stack Web Applications — SAIT
  *
  * Description:
- * Administrator page for adding a movie. Regular members who type this
- * URL are sent to /forbidden. The form posts to createMovieAction, which
- * validates and inserts into Supabase.
+ * Administrator page for adding a movie. Guests are sent to login. Viewers
+ * who type this URL are sent to /forbidden. The form posts to
+ * createMovieAction, which validates and inserts into Supabase.
  *
  * Inputs: Auth cookies for the current request.
  * Processing: Confirms admin role, then renders MovieForm.
@@ -30,7 +30,7 @@ export default async function NewMoviePage() {
   }
 
   return (
-    <div className="mx-auto max-w-2xl px-4 py-10 sm:px-6">
+    <div className="page-wrap max-w-2xl py-10">
       <PageHero
         kicker="Administrator"
         title="Add a title"

@@ -1,22 +1,24 @@
 /**
  * File: src/app/page.tsx
- * Student: Vansh Tuteja
- * Date: August 12, 2026
+ * Student: Group 12
+ * Date: August 15, 2026
  * Course: Full-Stack Web Applications — SAIT
  *
  * Description:
  * Public landing page for the Internet Movies Rental Company. It introduces
- * the portal, points members to the catalogue, and tells administrators
- * where to manage titles. No movie rows are hard-coded here; the live
- * catalogue lives on /movies and is loaded from Supabase.
+ * the portal and sends everyone — guests included — to the live catalogue.
+ * No movie rows are hard-coded here; titles load from Supabase on /movies.
  *
- * Inputs: Auth state from the root layout's request (re-read here for CTAs).
+ * Inputs: Auth state from the current request (used for a quieter CTA).
  * Processing: Chooses call-to-action copy based on sign-in and role.
- * Outputs: The home page hero and three service cards.
+ * Outputs: A full-height, minimal home page.
  */
 
 import Link from "next/link";
+import { DemoLoginBanner } from "@/components/DemoLoginBanner";
 import { SetupNotice } from "@/components/SetupNotice";
+import { Button } from "@/components/ui/button";
+import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { getAuthState } from "@/lib/auth";
 import { COMPANY } from "@/lib/constants";
 import { isSupabaseConfigured } from "@/lib/supabase/env";
@@ -26,80 +28,66 @@ export default async function HomePage() {
   const auth = configured ? await getAuthState() : { userId: null, isAdmin: false, email: null, role: null };
 
   return (
-    <div className="page-wrap py-10 sm:py-16">
-      <section className="page-hero">
-        <div className="relative z-10 grid gap-10 lg:grid-cols-[1.15fr_0.85fr] lg:items-center">
-          <div>
-            <p className="kicker">Internet Movies Rental Company</p>
-            <h1 className="font-display mt-4 text-5xl font-semibold leading-[1.05] text-ivory sm:text-6xl lg:text-7xl">
-              IMR Movie Library
-            </h1>
-            <p className="mt-5 max-w-xl text-lg leading-8 text-secondary">
-              Explore and manage the {COMPANY.name} collection. Members browse title, cast, and year.
-              Administrators keep the shelf current — every change lives in Supabase.
-            </p>
-            <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-              {auth.userId ? (
-                <Link href="/movies" className="btn btn-primary">
-                  Open catalogue
-                </Link>
-              ) : (
-                <>
-                  <Link href="/login" className="btn btn-primary">
-                    Sign in
-                  </Link>
-                  <Link href="/signup" className="btn btn-secondary">
-                    Create account
-                  </Link>
-                </>
-              )}
-            </div>
+    <div>
+      <section className="page-wrap flex min-h-[calc(100svh-3.5rem)] flex-col">
+        <div className="relative flex flex-1 flex-col justify-center py-16">
+          {!auth.userId ? (
+            <DemoLoginBanner className="absolute top-8 left-0 z-10 max-w-xl" />
+          ) : null}
+          <p className="text-sm text-muted-foreground">{COMPANY.name}</p>
+          <h1 className="mt-4 max-w-2xl text-4xl font-semibold tracking-tight sm:text-6xl">
+            The movie catalogue for IMR.
+          </h1>
+          <p className="mt-5 max-w-xl text-base leading-7 text-muted-foreground sm:text-lg">
+            Browse titles, actors, and release years. Guests can read the list. Administrators sign in
+            to keep the collection current.
+          </p>
+          <div className="mt-8 flex flex-wrap gap-3">
+            <Button nativeButton={false} size="lg" render={<Link href="/movies" />}>
+              Browse movies
+            </Button>
+            {auth.isAdmin ? (
+              <Button nativeButton={false} size="lg" variant="outline" render={<Link href="/movies/new" />}>
+                Add a movie
+              </Button>
+            ) : auth.userId ? null : (
+              <Button nativeButton={false} size="lg" variant="outline" render={<Link href="/login" />}>
+                Sign in
+              </Button>
+            )}
           </div>
-          <aside className="card-surface p-6 sm:p-8">
-            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-secondary">On every card</p>
-            <p className="font-display mt-3 text-3xl font-semibold text-ivory sm:text-4xl">Title · Cast · Year</p>
-            <p className="mt-4 text-sm leading-6 text-secondary">
-              The three fields every IMR title must carry. Nothing else is required to run the shop.
-            </p>
-            <div className="mt-6 flex flex-wrap gap-2">
-              <span className="badge badge-gold">Now showing</span>
-              <span className="badge badge-member">Staff portal</span>
-            </div>
-          </aside>
+        </div>
+
+        <div className="grid gap-4 py-10 sm:grid-cols-3">
+          {[
+            {
+              title: "Public catalogue",
+              body: "Title, cast, and year — no account required.",
+            },
+            {
+              title: "Staff tools",
+              body: "Admins add, edit, and delete movies in the database.",
+            },
+            {
+              title: "Calgary shop",
+              body: `${COMPANY.address.split(",")[0]}. ${COMPANY.hours}.`,
+            },
+          ].map((item) => (
+            <Card key={item.title} size="sm">
+              <CardHeader>
+                <CardTitle>{item.title}</CardTitle>
+                <CardDescription>{item.body}</CardDescription>
+              </CardHeader>
+            </Card>
+          ))}
         </div>
       </section>
 
       {!configured ? (
-        <div className="mt-12">
+        <div className="page-wrap pb-12">
           <SetupNotice />
         </div>
       ) : null}
-
-      <section className="mt-12 grid gap-4 md:grid-cols-3">
-        {[
-          {
-            kicker: "Members",
-            title: "Browse the shelf",
-            body: "Sign in to read every title, the billed actors, and the release year.",
-          },
-          {
-            kicker: "Administrators",
-            title: "Keep stock current",
-            body: "Add, edit, and delete movies. The database — not the page — is the source of truth.",
-          },
-          {
-            kicker: "Security",
-            title: "Two locks",
-            body: "The UI hides admin tools from members. Row Level Security blocks direct writes as well.",
-          },
-        ].map((card) => (
-          <article key={card.title} className="card-surface p-6 transition-transform duration-200 hover:-translate-y-0.5">
-            <p className="kicker">{card.kicker}</p>
-            <h2 className="font-display mt-4 text-2xl font-semibold text-ivory">{card.title}</h2>
-            <p className="mt-3 text-sm leading-6 text-secondary">{card.body}</p>
-          </article>
-        ))}
-      </section>
     </div>
   );
 }

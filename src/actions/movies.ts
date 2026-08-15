@@ -1,15 +1,14 @@
 /**
  * File: src/actions/movies.ts
- * Student: Vansh Tuteja
- * Date: August 12, 2026
+ * Student: Group 12
+ * Date: August 15, 2026
  * Course: Full-Stack Web Applications — SAIT
  *
  * Description:
  * Server Actions that create, update, and delete movies. Every mutation
  * re-validates the payload, confirms the caller is an administrator, and
  * then talks to Supabase. Row Level Security is the last line of defence
- * if someone calls the Data API with a stolen anon key and a regular-user
- * session.
+ * if someone calls the Data API with a stolen anon key and a viewer session.
  *
  * Inputs: FormData from MovieForm or a movie id from DeleteMovieButton.
  * Processing: Auth check → validation → insert/update/delete → revalidate.
@@ -54,6 +53,7 @@ export async function createMovieAction(
     return { ok: false, message: "Supabase is not configured." };
   }
 
+  // --- Insert movie ---
   const { error } = await supabase
     .from("movies")
     .insert({
@@ -69,7 +69,6 @@ export async function createMovieAction(
   }
 
   revalidatePath("/movies");
-  revalidatePath("/admin");
   redirect("/movies?status=created");
 }
 
@@ -98,6 +97,7 @@ export async function updateMovieAction(
     return { ok: false, message: "Supabase is not configured." };
   }
 
+  // --- Update movie ---
   const { data, error } = await supabase
     .from("movies")
     .update({
@@ -117,7 +117,6 @@ export async function updateMovieAction(
   }
 
   revalidatePath("/movies");
-  revalidatePath("/admin");
   revalidatePath(`/movies/${id}/edit`);
   redirect("/movies?status=updated");
 }
@@ -139,6 +138,7 @@ export async function deleteMovieAction(movieId: string): Promise<ActionResult> 
     return { ok: false, message: "Supabase is not configured." };
   }
 
+  // --- Delete movie ---
   const { data, error } = await supabase
     .from("movies")
     .delete()
@@ -154,6 +154,5 @@ export async function deleteMovieAction(movieId: string): Promise<ActionResult> 
   }
 
   revalidatePath("/movies");
-  revalidatePath("/admin");
   return { ok: true, message: "Movie removed from the catalogue." };
 }
